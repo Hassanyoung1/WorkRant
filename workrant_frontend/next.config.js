@@ -1,26 +1,10 @@
-const path = require('path');
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
-    // Temporarily ignore TypeScript errors during build
     ignoreBuildErrors: true,
   },
   eslint: {
-    // Temporarily ignore ESLint errors during build
     ignoreDuringBuilds: true,
-  },
-  swcMinify: false, // Disable SWC minifier
-  compiler: {
-    removeConsole: false,
-  },
-  webpack: (config) => {
-    // Ensure proper path resolution for @/* imports
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': path.resolve(__dirname, 'src'),
-    };
-    return config;
   },
   images: {
     remotePatterns: [
