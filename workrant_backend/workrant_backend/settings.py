@@ -65,6 +65,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files in production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -93,10 +94,23 @@ TEMPLATES = [
 WSGI_APPLICATION = 'workrant_backend.wsgi.application'
 
 # Database Configuration
-# Support both SQLite (development) and PostgreSQL (production)
+# Support SQLite (development), PostgreSQL (production), and DATABASE_URL (Render)
+DATABASE_URL = os.getenv('DATABASE_URL')
 USE_POSTGRES = os.getenv('USE_POSTGRES', 'False').lower() == 'true'
 
-if USE_POSTGRES:
+if DATABASE_URL:
+    # Render/Heroku style DATABASE_URL
+    try:
+        import dj_database_url
+        DATABASES = {
+            'default': dj_database_url.parse(DATABASE_URL)
+        }
+    except ImportError:
+        raise ImportError(
+            "dj-database-url is required for DATABASE_URL support. "
+            "Install it with: pip install dj-database-url"
+        )
+elif USE_POSTGRES:
     # PostgreSQL configuration
     DATABASE_NAME = os.getenv('DATABASE_NAME')
     DATABASE_USER = os.getenv('DATABASE_USER')
