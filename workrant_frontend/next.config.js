@@ -10,10 +10,9 @@ const nextConfig = {
     // Temporarily ignore ESLint errors during build
     ignoreDuringBuilds: true,
   },
-  swcMinify: true,
-  experimental: {
-    esmExternals: 'loose',
-    serverComponentsExternalPackages: [],
+  swcMinify: false, // Disable SWC minifier
+  compiler: {
+    removeConsole: false,
   },
   webpack: (config) => {
     // Ensure proper path resolution for @/* imports
@@ -23,7 +22,6 @@ const nextConfig = {
     };
     return config;
   },
-  outputFileTracingRoot: path.join(__dirname, '../'),
   images: {
     remotePatterns: [
       {
