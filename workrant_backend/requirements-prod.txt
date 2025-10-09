@@ -1,0 +1,25 @@
+# Production Requirements for Django Backend
+# Add to workrant_backend/requirements.txt for production
+
+# Production server
+gunicorn==21.2.0
+
+# Database
+psycopg2-binary==2.9.7
+
+# Environment variables
+python-dotenv==1.0.0
+
+# Production dependencies
+whitenoise==6.5.0  # Static file serving
+django-cors-headers==4.3.1  # CORS handling
+
+# Security
+django-ratelimit==4.1.0  # Rate limiting (optional)
+
+# Monitoring (optional)
+sentry-sdk[django]==1.32.0  # Error tracking
+
+# Performance (optional)  
+django-redis==5.3.0  # Redis caching
+redis==4.6.0
