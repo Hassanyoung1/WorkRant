@@ -1,0 +1,8 @@
+# Vercel ignore file
+workrant_backend/
+*.md
+*.log
+.env
+.env.local
+node_modules
+.git
