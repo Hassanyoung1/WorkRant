@@ -89,7 +89,6 @@ class UserLoginView(APIView):
     def post(self, request):
         import logging
         logger = logging.getLogger("workrant.auth")
-        logger.info(f"Login attempt with data: {request.data}")
         
         serializer = UserLoginSerializer(data=request.data)
         
@@ -115,7 +114,6 @@ class UserLoginView(APIView):
             
             return Response(response_data, status=status.HTTP_200_OK)
         
-        logger.error(f"Login validation failed: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
