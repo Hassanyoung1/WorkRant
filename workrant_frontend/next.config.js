@@ -1,3 +1,5 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
@@ -7,6 +9,17 @@ const nextConfig = {
   eslint: {
     // Temporarily ignore ESLint errors during build
     ignoreDuringBuilds: true,
+  },
+  experimental: {
+    esmExternals: 'loose',
+  },
+  webpack: (config) => {
+    // Ensure proper path resolution for @/* imports
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname, 'src'),
+    };
+    return config;
   },
   images: {
     remotePatterns: [
