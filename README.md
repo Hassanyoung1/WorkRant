@@ -181,3 +181,4 @@ Files we will create (in later steps): `AI_RULES.md`, `AGENT_TASKS.md`, `PII_FIL
 
   > “WorkRant is an anonymous forum hosted to share opinions and experiences. Posts are user-generated and unverified. If you believe a post contains illegal content or doxxing, use the Report button.”
 
+# Trigger Vercel redeploy
