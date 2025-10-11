@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
@@ -12,7 +12,7 @@ import apiService, { APIError } from '@/lib/api';
 
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
-const PostsPage: React.FC = () => {
+const PostsContent: React.FC = () => {
   const searchParams = useSearchParams();
   const [showSuccess, setShowSuccess] = useState(false);
   const companyId = searchParams.get('company');
@@ -195,6 +195,23 @@ const PostsPage: React.FC = () => {
       </main>
       </div>
     </ErrorBoundary>
+  );
+};
+
+const PostsPage: React.FC = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#0a0a0a]">
+        <Header />
+        <main className="pt-20 px-4 sm:px-6 lg:px-8 pb-12">
+          <div className="max-w-4xl mx-auto">
+            <PostSkeleton count={3} />
+          </div>
+        </main>
+      </div>
+    }>
+      <PostsContent />
+    </Suspense>
   );
 };
 

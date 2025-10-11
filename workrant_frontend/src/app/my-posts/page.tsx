@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
@@ -12,7 +12,7 @@ import apiService, { APIError } from '@/lib/api';
 
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
-const MyPostsPage: React.FC = () => {
+const MyPostsContent: React.FC = () => {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const [showSuccess, setShowSuccess] = useState(false);
@@ -242,6 +242,23 @@ const MyPostsPage: React.FC = () => {
         </main>
       </div>
     </ErrorBoundary>
+  );
+};
+
+const MyPostsPage: React.FC = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#0a0a0a]">
+        <Header />
+        <main className="pt-20 px-4 sm:px-6 lg:px-8 pb-12">
+          <div className="max-w-4xl mx-auto">
+            <PostSkeleton count={3} />
+          </div>
+        </main>
+      </div>
+    }>
+      <MyPostsContent />
+    </Suspense>
   );
 };
 

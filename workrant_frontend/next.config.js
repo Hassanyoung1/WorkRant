@@ -80,22 +80,6 @@ const nextConfig = {
         poll: 1000,
       };
     }
-    // Add trusted types policy
-    if (!dev && !isServer) {
-      config.module.rules.push({
-        test: /\.(js|mjs|jsx|ts|tsx)$/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              plugins: [
-                ['@babel/plugin-transform-react-jsx', { runtime: 'automatic' }]
-              ]
-            }
-          }
-        ]
-      });
-    }
     return config;
   }
 };
