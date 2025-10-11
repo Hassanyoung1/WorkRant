@@ -1,8 +1,7 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
-  "installCommand": "npm install",
-  "rootDirectory": "workrant_frontend",
+  "buildCommand": "cd workrant_frontend && npm run build",
+  "outputDirectory": "workrant_frontend/.next",
+  "installCommand": "cd workrant_frontend && npm install",
   "env": {
     "NEXT_PUBLIC_API_URL": "https://api.workrant.app/api",
     "NEXT_PUBLIC_BACKEND_URL": "https://api.workrant.app",
