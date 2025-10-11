@@ -1,0 +1,10 @@
+{
+  "name": "workrant-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd workrant_frontend && npm install && npm run build",
+    "dev": "cd workrant_frontend && npm run dev",
+    "start": "cd workrant_frontend && npm start"
+  }
+}
