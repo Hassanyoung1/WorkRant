@@ -1,5 +1,7 @@
 # Vercel ignore file
 workrant_backend/
+workrant_frontend/
+workrant_frontend_backup/
 *.md
 *.log
 .env
