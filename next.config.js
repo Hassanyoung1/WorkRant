@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
@@ -72,6 +74,12 @@ const nextConfig = {
   // Re-enable strict mode for better security
   reactStrictMode: true,
   webpack: (config, { dev, isServer }) => {
+    // Explicitly set path aliases for webpack
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname, 'src'),
+    };
+
     if (dev && !isServer) {
       config.watchOptions = {
         ...config.watchOptions,
