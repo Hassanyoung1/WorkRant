@@ -104,10 +104,12 @@ class APIService {
     // Add Authorization header if we have an access token (but not for auth endpoints or public endpoints)
     const isAuthEndpoint = endpoint.startsWith('/auth/login') || 
                           endpoint.startsWith('/auth/register');
+    // UUID pattern: 8-4-4-4-12 hex digits
+    const uuidPattern = /^\/posts\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\//i;
     const isPublicEndpoint = endpoint === '/posts/' ||
                             (endpoint.startsWith('/posts/?') && !endpoint.includes('user=current')) ||
                             endpoint.startsWith('/companies') ||
-                            endpoint.startsWith('/posts/') && endpoint.match(/^\/posts\/[^\/]+\/$/) || // single post view
+                            uuidPattern.test(endpoint) || // single post view (UUID only, not /posts/create/)
                             (endpoint.includes('/comments/') && options.method === 'GET') // viewing comments
     
     // Always try to load token from localStorage if not present or empty
