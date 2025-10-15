@@ -10,7 +10,7 @@
 
 [build.environment]
   # Node version
-  NODE_VERSION = "18.17.0"
+  NODE_VERSION = "20.11.0"
   
   # Production environment variables
   NEXT_PUBLIC_API_URL = "https://api.workrant.app/api"
