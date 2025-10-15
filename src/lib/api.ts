@@ -134,9 +134,9 @@ class APIService {
     }
 
     const config: RequestInit = {
-      headers,
-      credentials: 'include', // Still include for any cookies
       ...options,
+      headers, // Put headers AFTER options spread so they override
+      credentials: 'include', // Still include for any cookies
     };
 
     try {
