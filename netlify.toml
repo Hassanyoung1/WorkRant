@@ -21,21 +21,9 @@
   NEXT_PUBLIC_SECURE_MODE = "true"
   NEXT_PUBLIC_DEBUG = "false"
 
-# Ignore backend directories during build
-[build.ignore]
-  command = "[ -d workrant_backend ]"
-
 # Next.js specific settings
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-# Redirect rules for Next.js (handles client-side routing)
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  force = false
-  conditions = {Role = ["client"]}
 
 # Headers for security
 [[headers]]
