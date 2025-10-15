@@ -8,11 +8,12 @@ const policy = {
   ].filter(Boolean),
   'style-src': ["'self'", "'unsafe-inline'"],
   'font-src': ["'self'"],
-  'img-src': ["'self'", 'data:', 'blob:'],
+  'img-src': ["'self'", 'data:', 'blob:', 'https:'],
   'connect-src': [
     "'self'",
     process.env.NODE_ENV === 'development' ? 'http://localhost:*' : '',
-    process.env.NEXT_PUBLIC_API_URL || '',
+    process.env.NEXT_PUBLIC_BACKEND_URL || 'https://api.workrant.app',
+    process.env.NEXT_PUBLIC_MEDIA_URL || '',
   ].filter(Boolean),
 };
 
