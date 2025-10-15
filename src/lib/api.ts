@@ -70,6 +70,11 @@ class APIService {
   }
 
   getAccessToken() {
+    // Always try to reload from localStorage if token is missing
+    if (!this.accessToken && typeof window !== 'undefined') {
+      this.accessToken = localStorage.getItem('access_token');
+      this.refreshToken = localStorage.getItem('refresh_token');
+    }
     return this.accessToken;
   }
 
@@ -104,6 +109,12 @@ class APIService {
                             endpoint.startsWith('/companies') ||
                             endpoint.startsWith('/posts/') && endpoint.match(/^\/posts\/[^\/]+\/$/) || // single post view
                             (endpoint.includes('/comments/') && options.method === 'GET') // viewing comments
+    
+    // Always try to load token from localStorage if not present
+    if (!this.accessToken && typeof window !== 'undefined') {
+      this.accessToken = localStorage.getItem('access_token');
+      this.refreshToken = localStorage.getItem('refresh_token');
+    }
     
     if (this.accessToken && !isAuthEndpoint && !isPublicEndpoint) {
       headers['Authorization'] = `Bearer ${this.accessToken}`;
