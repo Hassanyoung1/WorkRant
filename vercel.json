@@ -1,5 +1,7 @@
 {
   "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
   "env": {
     "NEXT_PUBLIC_API_URL": "https://api.workrant.app/api",
     "NEXT_PUBLIC_BACKEND_URL": "https://api.workrant.app",
