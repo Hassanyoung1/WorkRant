@@ -110,14 +110,22 @@ class APIService {
                             endpoint.startsWith('/posts/') && endpoint.match(/^\/posts\/[^\/]+\/$/) || // single post view
                             (endpoint.includes('/comments/') && options.method === 'GET') // viewing comments
     
-    // Always try to load token from localStorage if not present
-    if (!this.accessToken && typeof window !== 'undefined') {
-      this.accessToken = localStorage.getItem('access_token');
-      this.refreshToken = localStorage.getItem('refresh_token');
+    // Always try to load token from localStorage if not present or empty
+    if ((!this.accessToken || this.accessToken === '') && typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('access_token');
+      const storedRefresh = localStorage.getItem('refresh_token');
+      if (storedToken) {
+        this.accessToken = storedToken;
+        this.refreshToken = storedRefresh;
+        console.log('[API] Reloaded token from localStorage for:', endpoint);
+      }
     }
     
     if (this.accessToken && !isAuthEndpoint && !isPublicEndpoint) {
+      console.log('[API] Adding Authorization header for:', endpoint);
       headers['Authorization'] = `Bearer ${this.accessToken}`;
+    } else if (!isAuthEndpoint && !isPublicEndpoint) {
+      console.warn('[API] No token available for protected endpoint:', endpoint);
     }
 
     // Merge with any additional headers (but skip empty headers object from FormData requests)
