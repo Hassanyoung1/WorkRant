@@ -173,7 +173,10 @@ class APIService {
       if (error instanceof APIError) {
         throw error;
       }
-      throw new APIError('Network error occurred');
+      // Log the actual error for debugging
+      console.error('[API] Network error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Network error occurred';
+      throw new APIError(`Network error: ${errorMessage}`);
     }
   }
 
