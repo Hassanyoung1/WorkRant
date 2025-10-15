@@ -11,10 +11,11 @@ const policy = {
   'img-src': ["'self'", 'data:', 'blob:', 'https:'],
   'connect-src': [
     "'self'",
-    process.env.NODE_ENV === 'development' ? 'http://localhost:*' : '',
-    process.env.NEXT_PUBLIC_BACKEND_URL || 'https://api.workrant.app',
-    process.env.NEXT_PUBLIC_MEDIA_URL || '',
+    'https://api.workrant.app',
+    'https://api.workrant.app/media',
+    process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '',
   ].filter(Boolean),
+  'frame-ancestors': ["'none'"],
 };
 
 export function getCSP() {
