@@ -65,7 +65,7 @@ const nextConfig = {
   },
   experimental: {
     // Better error handling
-    webpackBuildWorker: true,
+    webpackBuildWorker: false,
     // Improve Fast Refresh reliability
     serverActions: {
       allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002', 'localhost:3003']
