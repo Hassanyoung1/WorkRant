@@ -1,6 +1,5 @@
 # Vercel ignore file - only exclude backend
-workrant_backend/
-# workrant_frontend/
+workrant_backend
 workrant_frontend_backup/
 venv/
 *.pyc
