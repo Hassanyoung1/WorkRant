@@ -4,11 +4,12 @@ Views for accounts app.
 SECURITY RULES:
 - All authentication endpoints properly secured
 - No PII exposure in responses
-- Proper JWT token handling
+- Proper JWT token handling with httpOnly cookies
 - Recovery tokens shown only once
 - Rate limiting on auth endpoints
 """
 from django.utils.decorators import method_decorator
+from django.conf import settings
 from rest_framework import status, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -130,21 +131,62 @@ class UserProfileView(APIView):
         return Response(serializer.data)
 
 
-class CustomTokenRefreshView(TokenRefreshView):
+class CustomTokenRefreshView(APIView):
     """
     Custom JWT token refresh endpoint.
     
-    Extends the default refresh view with additional security.
+    Reads refresh token from httpOnly cookie and returns new access token in cookie.
     """
+    permission_classes = [permissions.AllowAny]
     
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
+        from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+        from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
         
-        if response.status_code == 200:
-            # Add disclaimer to refresh response
-            response.data['disclaimer'] = 'Opinions expressed are anonymous and unverified.'
+        # Get refresh token from cookie instead of request body
+        refresh_token = request.COOKIES.get('refresh_token')
         
-        return response
+        if not refresh_token:
+            return Response(
+                {'error': 'Refresh token not found in cookies'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        try:
+            # Use TokenRefreshSerializer to validate and refresh
+            serializer = TokenRefreshSerializer(data={'refresh': refresh_token})
+            serializer.is_valid(raise_exception=True)
+            
+            # Get new access token
+            new_access_token = serializer.validated_data['access']  # type: ignore[index]
+            
+            # Create response without tokens in body
+            response_data = {
+                'message': 'Token refreshed successfully',
+                'disclaimer': 'Opinions expressed are anonymous and unverified.'
+            }
+            
+            response = Response(response_data, status=status.HTTP_200_OK)
+            
+            # Set new access token in httpOnly cookie
+            is_production = not settings.DEBUG
+            response.set_cookie(
+                key='access_token',
+                value=new_access_token,
+                max_age=3600,  # 1 hour
+                httponly=True,
+                secure=is_production,
+                samesite='Lax',
+                domain=None,
+            )
+            
+            return response
+            
+        except (TokenError, InvalidToken) as e:
+            return Response(
+                {'error': 'Invalid refresh token', 'detail': str(e)},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
 
 
 # @method_decorator(ratelimit(key='user', rate='3/m', method='POST'), name='post')

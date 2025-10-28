@@ -25,6 +25,38 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
+# Redirect www to non-www (canonical domain)
+[[redirects]]
+  from = "https://www.workrant.app/*"
+  to = "https://workrant.app/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.workrant.app/*"
+  to = "https://workrant.app/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.workrant.netlify.app/*"
+  to = "https://workrant.netlify.app/:splat"
+  status = 301
+  force = true
+
+# Force HTTPS on all domains
+[[redirects]]
+  from = "http://workrant.app/*"
+  to = "https://workrant.app/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://workrant.netlify.app/*"
+  to = "https://workrant.netlify.app/:splat"
+  status = 301
+  force = true
+
 # Headers for security
 [[headers]]
   for = "/*"
