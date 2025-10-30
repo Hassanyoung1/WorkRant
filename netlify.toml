@@ -63,19 +63,15 @@
   force = true
 
 # Headers for security
-
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = '''
+    Content-Security-Policy = """
       default-src 'self';
-      connect-src 'self' https://workrant.onrender.com;
-      font-src 'self' data: https://fonts.gstatic.com;
-      img-src 'self' data:;
+      script-src 'self' 'unsafe-inline' 'unsafe-eval';
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-      script-src 'self' 'unsafe-inline';
-    '''
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "origin-when-cross-origin"
+      font-src 'self' data: https://fonts.gstatic.com;
+      img-src 'self' data: https:;
+      connect-src 'self' https://workrant.onrender.com https://api.workrant.app;
+      frame-src 'self';
+    """
