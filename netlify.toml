@@ -63,9 +63,11 @@
   force = true
 
 # Headers for security
+
 [[headers]]
   for = "/*"
   [headers.values]
+    Content-Security-Policy = "default-src 'self'; connect-src 'self' https://api.workrant.app https://api.workrant.app/media http://localhost:8000 https://workrant.onrender.com; font-src 'self' data:; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
