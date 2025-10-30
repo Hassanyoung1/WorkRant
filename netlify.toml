@@ -69,7 +69,7 @@
   [headers.values]
     Content-Security-Policy = '''
       default-src 'self';
-      connect-src 'self' https://workrant.onrender.com http://localhost:8000;
+      connect-src 'self' https://workrant.onrender.com;
       font-src 'self' data: https://fonts.gstatic.com;
       img-src 'self' data:;
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
