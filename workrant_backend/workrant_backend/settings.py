@@ -99,19 +99,20 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 USE_POSTGRES = os.getenv('USE_POSTGRES', 'False').lower() == 'true'
 
 if DATABASE_URL:
-    # Render/Heroku style DATABASE_URL
+    # Render/Heroku style DATABASE_URL (priority)
     try:
         import dj_database_url
         DATABASES = {
-            'default': dj_database_url.parse(DATABASE_URL)
+            'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
         }
+        print("✓ Using DATABASE_URL for database connection")
     except ImportError:
         raise ImportError(
             "dj-database-url is required for DATABASE_URL support. "
             "Install it with: pip install dj-database-url"
         )
 elif USE_POSTGRES:
-    # PostgreSQL configuration
+    # PostgreSQL configuration with individual variables
     DATABASE_NAME = os.getenv('DATABASE_NAME')
     DATABASE_USER = os.getenv('DATABASE_USER')
     DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')
@@ -121,7 +122,8 @@ elif USE_POSTGRES:
     # Validate required PostgreSQL credentials
     if not all([DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD]):
         raise ValueError(
-            "DATABASE_NAME, DATABASE_USER, and DATABASE_PASSWORD environment variables are required for PostgreSQL."
+            "When USE_POSTGRES=true and DATABASE_URL is not provided, "
+            "DATABASE_NAME, DATABASE_USER, and DATABASE_PASSWORD environment variables are required."
         )
     
     DATABASES = {
@@ -137,6 +139,7 @@ elif USE_POSTGRES:
             },
         }
     }
+    print("✓ Using PostgreSQL with individual credentials")
 else:
     # SQLite configuration (development)
     DATABASES = {
@@ -145,6 +148,7 @@ else:
             'NAME': BASE_DIR / 'workrant_dev.db',
         }
     }
+    print("✓ Using SQLite database")
 
 # Rest Framework Configuration
 REST_FRAMEWORK = {

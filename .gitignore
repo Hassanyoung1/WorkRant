@@ -1,9 +1,15 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Backend
-workrant_backend/
+# Backend - Only ignore specific backend files
 workrant_frontend/
 workrant_frontend_backup/
+workrant_backend/*.db
+workrant_backend/*.log
+workrant_backend/media/
+workrant_backend/staticfiles/
+workrant_backend/__pycache__/
+workrant_backend/*/__pycache__/
+workrant_backend/*/*/__pycache__/
 
 # Python
 venv/
