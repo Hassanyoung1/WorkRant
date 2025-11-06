@@ -152,7 +152,7 @@ export default function PostFeed() {
           <select
             value={filters.post_type || ''}
             onChange={(e) => setFilters(prev => ({ ...prev, post_type: e.target.value || undefined }))}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="px-3 py-2 bg-gray-800 text-white border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
           >
             <option value="">All Categories</option>
             <option value="experience">Experience</option>
@@ -167,13 +167,13 @@ export default function PostFeed() {
             placeholder="Search companies..."
             value={filters.company || ''}
             onChange={(e) => setFilters(prev => ({ ...prev, company: e.target.value || undefined }))}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="px-3 py-2 bg-gray-800 text-white border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 placeholder-gray-400"
           />
 
           <select
             value={filters.sort_by || ''}
             onChange={(e) => setFilters(prev => ({ ...prev, sort_by: e.target.value as PostFilters['sort_by'] }))}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="px-3 py-2 bg-gray-800 text-white border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
           >
             <option value="">Latest</option>
             <option value="upvotes">Most Upvotes</option>
