@@ -18,6 +18,7 @@ export default function RegisterForm() {
   });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [piiWarning, setPiiWarning] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
@@ -59,8 +60,15 @@ export default function RegisterForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Prevent duplicate submissions
+    if (isSubmitting || isLoading) {
+      return;
+    }
+    
     if (!validateForm()) return;
 
+    setIsSubmitting(true);
+    
     try {
       await register(formData);
       // Registration success is handled by AuthContext
@@ -69,6 +77,8 @@ export default function RegisterForm() {
     } catch (error) {
       // Error is handled by the auth context
       console.error('Registration failed:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -246,10 +256,10 @@ export default function RegisterForm() {
           <div>
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || isSubmitting}
               className="btn btn-primary w-full"
             >
-              {isLoading ? (
+              {isLoading || isSubmitting ? (
                 <>
                   <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
