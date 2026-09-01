@@ -83,7 +83,8 @@ export interface Comment {
 // Form Types
 export interface LoginFormData {
   pseudonym: string;
-  password: string;
+  password?: string;
+  recovery_token?: string;
 }
 
 export interface RegisterFormData {

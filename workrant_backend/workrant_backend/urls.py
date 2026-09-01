@@ -15,19 +15,22 @@ from rest_framework_simplejwt.views import (
 from . import api_views
 
 urlpatterns = [
+    # Root redirect for app health / compatibility
+    path('', api_views.api_root, name='root_api'),
+
     # Admin
     path('admin/', admin.site.urls),
-    
+
     # API root and health check
     path('api/', api_views.api_root, name='api_root'),
     path('api/health/', api_views.health_check, name='health_check'),
-    
+
     # API endpoints
     path('api/auth/', include('accounts.urls')),
     path('api/posts/', include('posts.urls')),
     path('api/companies/', include('companies.urls')),
     path('api/moderation/', include('moderation.urls')),
-    
+
     # JWT token endpoints
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

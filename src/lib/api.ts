@@ -14,8 +14,8 @@ import {
 } from '@/types';
 
 const API_BASE_URL = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:8000/api' // Development backend URL
-  : process.env.NEXT_PUBLIC_API_URL || 'https://api.workrant.app/api'; // Production uses api subdomain with /api path
+  ? process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000/api'
+  : process.env.NEXT_PUBLIC_API_URL || 'https://api.workrant.app/api';
 
 export class APIError extends Error {
   code?: string;
@@ -173,13 +173,42 @@ class APIService {
           }
         }
         const errorData = await response.json().catch(() => ({}));
+        const validationMessages: string[] = [];
+
+        const collectMessages = (value: unknown) => {
+          if (Array.isArray(value)) {
+            value.forEach(item => collectMessages(item));
+            return;
+          }
+
+          if (typeof value === 'string') {
+            if (value.trim()) validationMessages.push(value.trim());
+            return;
+          }
+
+          if (value && typeof value === 'object') {
+            Object.values(value as Record<string, unknown>).forEach(item => collectMessages(item));
+          }
+        };
+
+        if (errorData && typeof errorData === 'object') {
+          collectMessages(errorData);
+        }
+
+        const readableMessage =
+          validationMessages.length > 0
+            ? validationMessages.join(' ')
+            : errorData?.message || errorData?.error || `HTTP ${response.status}: ${response.statusText}`;
+
         console.error('[API] Request failed:', {
           endpoint,
           status: response.status,
-          statusText: response.statusText
+          statusText: response.statusText,
+          responseBody: errorData,
         });
+
         throw new APIError(
-          errorData.message || `HTTP ${response.status}: ${response.statusText}`,
+          String(readableMessage),
           response.status,
           errorData.code,
           errorData.details
@@ -244,10 +273,20 @@ class APIService {
   }
 
   // Authentication
-  async login(username: string, password: string): Promise<LoginResponse> {
+  async login(username: string, password?: string, recoveryToken?: string): Promise<LoginResponse> {
+    const payload: Record<string, string> = { pseudonym: username };
+
+    if (password) {
+      payload.password = password;
+    }
+
+    if (recoveryToken) {
+      payload.recovery_token = recoveryToken;
+    }
+
     return this.makeRequest('/auth/login/', {
       method: 'POST',
-      body: JSON.stringify({ pseudonym: username, password }),
+      body: JSON.stringify(payload),
     });
   }
 

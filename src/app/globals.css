@@ -3,23 +3,24 @@
 @tailwind utilities;
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #f5f5f5;
-  --primary: #ea580c;
-  --primary-foreground: #ffffff;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #e5e5e5;
-  --muted: #262626;
-  --muted-foreground: #a3a3a3;
-  --border: #404040;
-  --card: #171717;
-  --card-foreground: #f5f5f5;
-  --accent: #ea580c;
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --ring: #ea580c;
-  --input: #404040;
+  --background: #efe5de;
+  --foreground: #261b1a;
+  --primary: #3b2723;
+  --primary-foreground: #fffaf6;
+  --secondary: #e7d5c8;
+  --secondary-foreground: #261b1a;
+  --muted: #f7f1ec;
+  --muted-foreground: #584742;
+  --border: #d0b39d;
+  --card: #fffaf7;
+  --card-foreground: #261b1a;
+  --accent: #8d5745;
+  --accent-foreground: #fffaf6;
+  --destructive: #b42318;
+  --destructive-foreground: #fff;
+  --ring: #68493d;
+  --input: #f0e1d5;
+  color-scheme: light;
 }
 
 @theme inline {
@@ -40,37 +41,64 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-ring: var(--ring);
   --color-input: var(--input);
-  --font-sans: system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-sans), Arial, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --secondary: #1e293b;
-    --secondary-foreground: #f1f5f9;
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
-    --border: #334155;
-    --card: #0f172a;
-    --card-foreground: #f1f5f9;
-    --accent: #1e293b;
-    --accent-foreground: #f1f5f9;
-    --destructive: #ef4444;
-    --destructive-foreground: #ffffff;
-    --ring: #ea580c;
-    --input: #334155;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: var(--font-sans);
-  background: var(--background);
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f5efe9 0%, #eadbcf 100%);
   color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
   line-height: 1.6;
+  letter-spacing: -0.01em;
 }
 
-/* Ensure all input elements have proper text color */
+h1, h2, h3, h4, h5, h6 {
+  color: #2a1f1c;
+}
+
+p, li, span, label {
+  color: #4b3d38;
+}
+
+::selection {
+  background: rgba(107, 63, 52, 0.18);
+  color: #201c1a;
+}
+
+.text-gray-400,
+.text-gray-500,
+.text-gray-600,
+.text-stone-500,
+.text-stone-600 {
+  color: #584f4b !important;
+}
+
+.text-gray-300 {
+  color: #433e3c !important;
+}
+
+.text-gray-200 {
+  color: #2d2725 !important;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
 input,
 textarea,
 select {
@@ -80,94 +108,80 @@ select {
 input::placeholder,
 textarea::placeholder {
   color: var(--muted-foreground);
-  opacity: 0.7;
+  opacity: 1;
 }
 
-/* Custom component styles */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: all 0.2s;
-  padding: 0.5rem 1rem;
-  border: none;
-  cursor: pointer;
+  gap: 0.5rem;
+  border-radius: 0.9rem;
+  border: 1px solid transparent;
+  padding: 0.8rem 1.3rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1;
+  transition: all 0.2s ease;
   text-decoration: none;
+  cursor: pointer;
 }
 
-.btn-primary {
-  background: linear-gradient(to right, #1f2937, #ea580c);
-  color: var(--primary-foreground);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  transition: all 0.2s;
-}
-
-.btn-primary:hover {
-  background: linear-gradient(to right, #000000, #c2410c);
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+.btn:hover {
   transform: translateY(-1px);
 }
 
+.btn-primary {
+  background: linear-gradient(135deg, #3a261f, #7a4636);
+  color: #fffaf7;
+  box-shadow: 0 12px 22px rgba(58, 38, 31, 0.16);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #2c1d1a, #683d31);
+}
+
 .btn-secondary {
-  background-color: var(--secondary);
-  color: var(--secondary-foreground);
+  background: rgba(74, 45, 36, 0.05);
+  border-color: rgba(74, 45, 36, 0.28);
+  color: #2a1f1c;
 }
 
 .btn-secondary:hover {
-  opacity: 0.8;
-}
-
-.btn-outline {
-  border: 1px solid var(--input);
-  background-color: transparent;
-  color: var(--foreground);
-}
-
-.btn-outline:hover {
-  background-color: var(--accent);
-  color: var(--accent-foreground);
+  background: rgba(74, 45, 36, 0.1);
 }
 
 .card {
-  border-radius: 0.5rem;
+  border-radius: 1.25rem;
   border: 1px solid var(--border);
-  background-color: var(--card);
+  background: rgba(255, 250, 247, 0.9);
   color: var(--card-foreground);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-  padding: 1.5rem;
+  box-shadow: 0 14px 32px rgba(58, 38, 31, 0.06);
 }
 
 .input {
   display: flex;
-  height: 2.5rem;
   width: 100%;
-  border-radius: 0.375rem;
-  border: 1px solid var(--input);
-  background-color: var(--background);
-  color: var(--foreground);
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
-  transition: border-color 0.2s;
+  height: 2.9rem;
+  border-radius: 0.9rem;
+  border: 1px solid #d9bfa8;
+  background: rgba(255, 255, 255, 0.8);
+  color: #2a1f1c;
+  padding: 0.7rem 0.85rem;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input:focus {
   outline: none;
   border-color: var(--ring);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ring) 20%, transparent);
+  box-shadow: 0 0 0 4px rgba(112, 71, 57, 0.12);
 }
 
-.input::placeholder {
-  color: var(--muted-foreground);
-}
-
-/* Animations */
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -176,5 +190,6 @@ textarea::placeholder {
 }
 
 .animate-fade-in {
-  animation: fade-in 0.3s ease-out;
+  animation: fade-in 0.25s ease-out;
 }
+

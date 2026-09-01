@@ -34,6 +34,30 @@ from .serializers import (
 )
 
 
+def set_auth_cookies(response, access_token, refresh_token=None):
+    """Set JWT tokens as secure httpOnly cookies."""
+    is_production = not settings.DEBUG
+    response.set_cookie(
+        key='access_token',
+        value=access_token,
+        max_age=3600,
+        httponly=True,
+        secure=is_production,
+        samesite='Lax',
+        domain=None,
+    )
+    if refresh_token is not None:
+        response.set_cookie(
+            key='refresh_token',
+            value=refresh_token,
+            max_age=7 * 24 * 60 * 60,
+            httponly=True,
+            secure=is_production,
+            samesite='Lax',
+            domain=None,
+        )
+
+
 # @method_decorator(ratelimit(key='ip', rate='5/m', method='POST'), name='post')  # Disabled for development
 class UserRegistrationView(APIView):
     """
@@ -71,8 +95,10 @@ class UserRegistrationView(APIView):
                 response_data['recovery_warning'] = (
                     'Save this recovery token securely. It will not be shown again.'
                 )
-            
-            return Response(response_data, status=status.HTTP_201_CREATED)
+
+            response = Response(response_data, status=status.HTTP_201_CREATED)
+            set_auth_cookies(response, str(access_token), str(refresh))
+            return response
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -112,8 +138,10 @@ class UserLoginView(APIView):
                 },
                 'disclaimer': 'Opinions expressed are anonymous and unverified.'
             }
-            
-            return Response(response_data, status=status.HTTP_200_OK)
+
+            response = Response(response_data, status=status.HTTP_200_OK)
+            set_auth_cookies(response, str(access_token), str(refresh))
+            return response
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -142,46 +170,42 @@ class CustomTokenRefreshView(APIView):
     def post(self, request, *args, **kwargs):
         from rest_framework_simplejwt.serializers import TokenRefreshSerializer
         from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
-        
-        # Get refresh token from cookie instead of request body
-        refresh_token = request.COOKIES.get('refresh_token')
-        
+
+        refresh_token = (
+            request.data.get('refresh')
+            or request.POST.get('refresh')
+            or request.COOKIES.get('refresh_token')
+        )
+
         if not refresh_token:
             return Response(
-                {'error': 'Refresh token not found in cookies'},
+                {'error': 'Refresh token not provided'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        
+
         try:
-            # Use TokenRefreshSerializer to validate and refresh
             serializer = TokenRefreshSerializer(data={'refresh': refresh_token})
             serializer.is_valid(raise_exception=True)
-            
-            # Get new access token
+
             new_access_token = serializer.validated_data['access']  # type: ignore[index]
-            
-            # Create response without tokens in body
+            rotated_refresh_token = serializer.validated_data.get('refresh')
+
             response_data = {
                 'message': 'Token refreshed successfully',
+                'access': str(new_access_token),
                 'disclaimer': 'Opinions expressed are anonymous and unverified.'
             }
-            
+            if rotated_refresh_token:
+                response_data['refresh'] = str(rotated_refresh_token)
+
             response = Response(response_data, status=status.HTTP_200_OK)
-            
-            # Set new access token in httpOnly cookie
-            is_production = not settings.DEBUG
-            response.set_cookie(
-                key='access_token',
-                value=new_access_token,
-                max_age=3600,  # 1 hour
-                httponly=True,
-                secure=is_production,
-                samesite='Lax',
-                domain=None,
+            set_auth_cookies(
+                response,
+                str(new_access_token),
+                str(rotated_refresh_token) if rotated_refresh_token else None,
             )
-            
             return response
-            
+
         except (TokenError, InvalidToken) as e:
             return Response(
                 {'error': 'Invalid refresh token', 'detail': str(e)},

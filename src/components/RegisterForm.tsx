@@ -23,7 +23,6 @@ export default function RegisterForm() {
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
 
-    // Pseudonym validation
     if (!formData.pseudonym.trim()) {
       errors.pseudonym = 'Pseudonym is required';
     } else if (formData.pseudonym.length < 3) {
@@ -31,14 +30,12 @@ export default function RegisterForm() {
     } else if (formData.pseudonym.length > 64) {
       errors.pseudonym = 'Pseudonym must be less than 64 characters';
     } else {
-      // Check for PII in pseudonym
       const piiCheck = PIIDetector.detect(formData.pseudonym);
       if (piiCheck.hasPII) {
         errors.pseudonym = 'Pseudonym cannot contain personal information like emails or phone numbers';
       }
     }
 
-    // Password validation for persistent accounts
     if (formData.account_type === 'persistent') {
       if (!formData.password) {
         errors.password = 'Password is required for persistent accounts';
@@ -59,23 +56,34 @@ export default function RegisterForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Prevent duplicate submissions
+
     if (isSubmitting || isLoading) {
       return;
     }
-    
+
     if (!validateForm()) return;
 
     setIsSubmitting(true);
-    
+
     try {
       await register(formData);
-      // Registration success is handled by AuthContext
-      // Recovery token is shown by AuthContext if provided
-      router.push('/'); // Redirect to home page after successful registration
+      router.push('/');
     } catch (error) {
-      // Error is handled by the auth context
+      const message = error instanceof Error ? error.message : 'Registration failed';
+      const normalized = message.toLowerCase();
+
+      if (normalized.includes('already taken') || normalized.includes('already exists') || normalized.includes('taken')) {
+        setFieldErrors(prev => ({
+          ...prev,
+          pseudonym: 'This pseudonym is already taken. Please choose another one.',
+        }));
+      } else {
+        setFieldErrors(prev => ({
+          ...prev,
+          pseudonym: message,
+        }));
+      }
+
       console.error('Registration failed:', error);
     } finally {
       setIsSubmitting(false);
@@ -85,14 +93,13 @@ export default function RegisterForm() {
   const handleInputChange = (field: keyof RegisterFormData) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const value = e.target.type === 'radio' ? e.target.value : e.target.value;
-    
+    const value = e.target.value;
+
     setFormData(prev => ({
       ...prev,
       [field]: value,
     }));
-    
-    // Clear field error when user starts typing
+
     if (fieldErrors[field]) {
       setFieldErrors(prev => ({
         ...prev,
@@ -100,7 +107,6 @@ export default function RegisterForm() {
       }));
     }
 
-    // Check for PII in pseudonym
     if (field === 'pseudonym' && value) {
       const piiCheck = PIIDetector.detect(value);
       if (piiCheck.hasPII) {
@@ -111,187 +117,114 @@ export default function RegisterForm() {
     }
   };
 
-
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        {/* Header */}
+    <form className="space-y-5" onSubmit={handleSubmit}>
+      <div className="space-y-4">
         <div>
-          <div className="mx-auto h-12 w-12 bg-gradient-to-br from-gray-900 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-            <span className="text-white font-bold text-xl">W</span>
+          <label className="mb-2 block text-sm font-medium text-stone-700">Account type</label>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <label className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-3 transition ${formData.account_type === 'persistent' ? 'border-[#6e3d2c] bg-[#f8efe9] shadow-sm' : 'border-[#dcc2b2] bg-[#fffaf7]'}`}>
+              <input
+                type="radio"
+                name="account_type"
+                value="persistent"
+                checked={formData.account_type === 'persistent'}
+                onChange={handleInputChange('account_type')}
+                className="mt-1 accent-[#6e3d2c]"
+              />
+              <div>
+                <div className="font-medium text-[#2f241f]">Persistent</div>
+                <div className="text-xs text-[#5d4c44]">Password protected</div>
+              </div>
+            </label>
+
+            <label className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-3 transition ${formData.account_type === 'ephemeral' ? 'border-[#6e3d2c] bg-[#f8efe9] shadow-sm' : 'border-[#dcc2b2] bg-[#fffaf7]'}`}>
+              <input
+                type="radio"
+                name="account_type"
+                value="ephemeral"
+                checked={formData.account_type === 'ephemeral'}
+                onChange={handleInputChange('account_type')}
+                className="mt-1 accent-[#6e3d2c]"
+              />
+              <div>
+                <div className="font-medium text-[#2f241f]">Anonymous session</div>
+                <div className="text-xs text-[#5d4c44]">Temporary account</div>
+              </div>
+            </label>
           </div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Join WorkRant
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Create your anonymous account to share workplace experiences
-          </p>
         </div>
 
-        {/* Form */}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            {/* Account type selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Account Type
-              </label>
-              <div className="space-y-2">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="account_type"
-                    value="persistent"
-                    checked={formData.account_type === 'persistent'}
-                    onChange={handleInputChange('account_type')}
-                    className="mr-3"
-                  />
-                  <div>
-                    <span className="font-medium text-gray-900">Persistent Account</span>
-                    <p className="text-sm text-gray-500">Create a password-protected account you can return to</p>
-                  </div>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="account_type"
-                    value="ephemeral"
-                    checked={formData.account_type === 'ephemeral'}
-                    onChange={handleInputChange('account_type')}
-                    className="mr-3"
-                  />
-                  <div>
-                    <span className="font-medium text-gray-900">Anonymous Session</span>
-                    <p className="text-sm text-gray-500">Temporary account for one-time posting</p>
-                  </div>
-                </label>
-              </div>
-            </div>
+        <div>
+          <label htmlFor="pseudonym" className="mb-1.5 block text-sm font-medium text-stone-700">Pseudonym</label>
+          <input
+            id="pseudonym"
+            name="pseudonym"
+            type="text"
+            required
+            value={formData.pseudonym}
+            onChange={handleInputChange('pseudonym')}
+            className={`input ${fieldErrors.pseudonym ? 'border-red-300 focus:border-red-500' : ''}`}
+            placeholder="Choose a unique pseudonym"
+          />
+          {piiWarning && <p className="mt-1 text-sm text-amber-700">{piiWarning}</p>}
+          {fieldErrors.pseudonym && <p className="mt-1 text-sm text-red-600">{fieldErrors.pseudonym}</p>}
+          <p className="mt-1 text-xs text-stone-500">This will be your public identity.</p>
+        </div>
 
-            {/* Pseudonym field */}
+        {formData.account_type === 'persistent' && (
+          <>
             <div>
-              <label htmlFor="pseudonym" className="block text-sm font-medium text-gray-700">
-                Pseudonym
-              </label>
+              <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-stone-700">Password</label>
               <input
-                id="pseudonym"
-                name="pseudonym"
-                type="text"
+                id="password"
+                name="password"
+                type="password"
                 required
-                value={formData.pseudonym}
-                onChange={handleInputChange('pseudonym')}
-                className={`input mt-1 ${
-                  fieldErrors.pseudonym ? 'border-red-300 focus-visible:ring-red-500' : ''
-                }`}
-                placeholder="Choose a unique pseudonym"
+                value={formData.password}
+                onChange={handleInputChange('password')}
+                className={`input ${fieldErrors.password ? 'border-red-300 focus:border-red-500' : ''}`}
+                placeholder="Create a secure password"
               />
-              {piiWarning && (
-                <p className="mt-1 text-sm text-yellow-600">{piiWarning}</p>
-              )}
-              {fieldErrors.pseudonym && (
-                <p className="mt-1 text-sm text-red-600">{fieldErrors.pseudonym}</p>
-              )}
-              <p className="mt-1 text-xs text-gray-500">
-                This will be your public identity. Choose wisely - it cannot be changed.
-              </p>
+              {fieldErrors.password && <p className="mt-1 text-sm text-red-600">{fieldErrors.password}</p>}
             </div>
 
-            {/* Password fields (only for persistent accounts) */}
-            {formData.account_type === 'persistent' && (
-              <>
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                    Password
-                  </label>
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    required
-                    value={formData.password}
-                    onChange={handleInputChange('password')}
-                    className={`input mt-1 ${
-                      fieldErrors.password ? 'border-red-300 focus-visible:ring-red-500' : ''
-                    }`}
-                    placeholder="Create a secure password"
-                  />
-                  {fieldErrors.password && (
-                    <p className="mt-1 text-sm text-red-600">{fieldErrors.password}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="password_confirm" className="block text-sm font-medium text-gray-700">
-                    Confirm Password
-                  </label>
-                  <input
-                    id="password_confirm"
-                    name="password_confirm"
-                    type="password"
-                    required
-                    value={formData.password_confirm}
-                    onChange={handleInputChange('password_confirm')}
-                    className={`input mt-1 ${
-                      fieldErrors.password_confirm ? 'border-red-300 focus-visible:ring-red-500' : ''
-                    }`}
-                    placeholder="Confirm your password"
-                  />
-                  {fieldErrors.password_confirm && (
-                    <p className="mt-1 text-sm text-red-600">{fieldErrors.password_confirm}</p>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* Error message */}
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-md p-3">
-              <p className="text-sm text-red-600">{error}</p>
+            <div>
+              <label htmlFor="password_confirm" className="mb-1.5 block text-sm font-medium text-stone-700">Confirm password</label>
+              <input
+                id="password_confirm"
+                name="password_confirm"
+                type="password"
+                required
+                value={formData.password_confirm}
+                onChange={handleInputChange('password_confirm')}
+                className={`input ${fieldErrors.password_confirm ? 'border-red-300 focus:border-red-500' : ''}`}
+                placeholder="Confirm your password"
+              />
+              {fieldErrors.password_confirm && <p className="mt-1 text-sm text-red-600">{fieldErrors.password_confirm}</p>}
             </div>
-          )}
-
-          {/* Submit button */}
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading || isSubmitting}
-              className="btn btn-primary w-full"
-            >
-              {isLoading || isSubmitting ? (
-                <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Creating Account...
-                </>
-              ) : (
-                'Create Account'
-              )}
-            </button>
-          </div>
-
-          {/* Links */}
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <Link href="/auth/login" className="font-medium text-orange-600 hover:text-orange-700">
-                Sign in
-              </Link>
-            </p>
-          </div>
-
-          {/* Privacy notice */}
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-            <p className="text-xs text-blue-800">
-              <strong>Privacy Guarantee:</strong> WorkRant only stores your pseudonym and encrypted password. 
-              We never collect real names, emails, or any personal identifying information.
-            </p>
-          </div>
-        </form>
+          </>
+        )}
       </div>
-    </div>
+
+      {error && (
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>
+      )}
+
+      <button type="submit" disabled={isLoading || isSubmitting} className="btn btn-primary w-full">
+        {isLoading || isSubmitting ? 'Creating account...' : 'Create account'}
+      </button>
+
+      <p className="text-center text-sm text-stone-600">
+        Already have an account?{' '}
+        <Link href="/auth/login" className="font-medium text-stone-900 underline decoration-stone-300 underline-offset-4 hover:text-stone-700">
+          Sign in
+        </Link>
+      </p>
+
+      <div className="rounded-2xl border border-stone-200 bg-stone-50 p-3 text-[11px] uppercase tracking-[0.12em] text-stone-700">
+        Privacy promise — only your pseudonym and encrypted password are stored
+      </div>
+    </form>
   );
 }

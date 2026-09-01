@@ -58,7 +58,7 @@ const PostsContent: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-stone-50">
         <Header />
         <main className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto space-y-6">
@@ -74,11 +74,11 @@ const PostsContent: React.FC = () => {
   if (error) {
     const isAuthError = error instanceof APIError && error.message.includes('Authentication required');
     return (
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-stone-50">
         <Header />
         <main className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
-            <div className={`border rounded-lg p-6 text-center ${
+            <div className={`border rounded-2xl p-6 text-center bg-white shadow-sm ${
               isAuthError 
                 ? 'bg-orange-900/20 border-orange-600' 
                 : 'bg-red-900/20 border-red-600'
@@ -117,7 +117,7 @@ const PostsContent: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-stone-50">
         <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -138,10 +138,10 @@ const PostsContent: React.FC = () => {
           )}
 
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">
+            <h1 className="text-3xl font-semibold tracking-tight text-stone-900 mb-2">
               {companyId ? 'Company Posts' : 'All Posts'}
             </h1>
-            <p className="text-gray-300">
+            <p className="text-stone-600">
               {companyId 
                 ? 'Browse workplace experiences for this company.'
                 : 'Browse all workplace experiences and discussions from the community.'
@@ -151,7 +151,7 @@ const PostsContent: React.FC = () => {
               <div className="mt-4">
                 <Link
                   href="/posts"
-                  className="inline-flex items-center text-sm text-orange-400 hover:text-orange-300 transition-colors"
+                  className="inline-flex items-center text-sm font-medium text-orange-700 hover:text-orange-900 transition-colors"
                 >
                   <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -163,14 +163,14 @@ const PostsContent: React.FC = () => {
           </div>
 
       {(!Array.isArray(posts) || posts.length === 0) ? (
-            <div className="bg-gray-900 border border-gray-800 rounded-lg shadow-sm p-12 text-center">
-              <h2 className="text-xl font-semibold text-white mb-2">No Posts Yet</h2>
-              <p className="text-gray-300 mb-6">
+            <div className="bg-white border border-stone-200 rounded-2xl shadow-sm p-12 text-center">
+              <h2 className="text-xl font-semibold text-stone-900 mb-2">No Posts Yet</h2>
+              <p className="text-stone-600 mb-6">
                 Be the first to share a workplace experience!
               </p>
               <a 
                 href="/create" 
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-900 to-orange-600 text-white rounded-lg hover:from-black hover:to-orange-700 transition-all"
+                className="btn btn-primary"
               >
                 Create First Post
               </a>
@@ -201,7 +201,7 @@ const PostsContent: React.FC = () => {
 const PostsPage: React.FC = () => {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#0a0a0a]">
+      <div className="min-h-screen bg-stone-50">
         <Header />
         <main className="pt-20 px-4 sm:px-6 lg:px-8 pb-12">
           <div className="max-w-4xl mx-auto">

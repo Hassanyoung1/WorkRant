@@ -120,7 +120,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'LOGIN_START' });
     
     try {
-      const response = await apiService.login(credentials.pseudonym, credentials.password);
+      const response = await apiService.login(
+        credentials.pseudonym,
+        credentials.password,
+        credentials.recovery_token
+      );
       
       // Store user and tokens in localStorage
       localStorage.setItem('user', JSON.stringify(response.user));

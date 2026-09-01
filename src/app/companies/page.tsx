@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import { apiService } from '@/lib/api';
 import { Company, CompanyFilters } from '@/types';
 
+
 export default function CompaniesPage() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(false);
@@ -48,27 +49,27 @@ export default function CompaniesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-stone-50">
       <Header />
       
-      <main className="container mx-auto px-4 py-8" role="main">
+      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8" role="main">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Companies</h1>
-          <p className="text-gray-300 mb-6">
+          <h1 className="text-3xl font-semibold tracking-tight text-stone-900 mb-2">Companies</h1>
+          <p className="text-stone-600 mb-6">
             Browse workplace discussions by company. All posts are anonymous and unverified.
           </p>
           
           {/* Anonymity Disclaimer */}
-          <div className="bg-gray-900 border border-orange-600 rounded-lg p-4 mb-6" role="alert">
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6" role="alert">
             <div className="flex">
               <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-orange-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <svg className="h-5 w-5 text-amber-700" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-orange-400">Information Notice</h3>
-                <div className="mt-1 text-sm text-orange-200">
+                <h3 className="text-sm font-medium text-amber-900">Information Notice</h3>
+                <div className="mt-1 text-sm text-amber-800">
                   <p>Opinions expressed are anonymous and unverified. Company ratings reflect community sentiment only.</p>
                 </div>
               </div>
@@ -77,11 +78,11 @@ export default function CompaniesPage() {
           
           {/* Search and Filters */}
                     {/* Search and Filters */}
-          <div className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 p-6 mb-6">
-            <h2 className="text-lg font-semibold text-white mb-4">Search & Filter Companies</h2>
+          <div className="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 mb-6">
+            <h2 className="text-lg font-semibold text-stone-900 mb-4">Search & Filter Companies</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label htmlFor="search" className="block text-sm font-semibold text-white mb-2">
+                  <label htmlFor="search" className="block text-sm font-semibold text-stone-900 mb-2">
                   Search Companies
                 </label>
                 <div className="relative">
@@ -89,7 +90,7 @@ export default function CompaniesPage() {
                     id="search"
                     type="search"
                     placeholder="Search by company name..."
-                    className="w-full px-4 py-3 pr-10 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-white placeholder-gray-400 bg-gray-800"
+                    className="input pr-10 focus:ring-2 focus:ring-orange-500"
                     value={filters.search || ''}
                     onChange={(e) => handleFilterChange('search', e.target.value)}
                     aria-describedby="search-help"
@@ -107,18 +108,18 @@ export default function CompaniesPage() {
                     </button>
                   )}
                 </div>
-                <p id="search-help" className="text-sm text-gray-400 mt-2">
+                <p id="search-help" className="text-sm text-stone-500 mt-2">
                   Find companies by name
                 </p>
               </div>
               
               <div>
-                <label htmlFor="industry" className="block text-sm font-semibold text-white mb-2">
+                  <label htmlFor="industry" className="block text-sm font-semibold text-stone-900 mb-2">
                   Industry
                 </label>
                 <select
                   id="industry"
-                  className="w-full px-4 py-3 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-white bg-gray-800"
+                  className="input focus:ring-2 focus:ring-orange-500"
                   value={filters.industry || ''}
                   onChange={(e) => handleFilterChange('industry', e.target.value)}
                   aria-describedby="industry-help"
@@ -133,18 +134,18 @@ export default function CompaniesPage() {
                   <option value="education">Education</option>
                   <option value="other">Other</option>
                 </select>
-                <p id="industry-help" className="text-sm text-gray-400 mt-2">
+                <p id="industry-help" className="text-sm text-stone-500 mt-2">
                   Filter by industry sector
                 </p>
               </div>
               
               <div>
-                <label htmlFor="sort" className="block text-sm font-semibold text-white mb-2">
+                  <label htmlFor="sort" className="block text-sm font-semibold text-stone-900 mb-2">
                   Sort By
                 </label>
                 <select
                   id="sort"
-                  className="w-full px-4 py-3 border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-white bg-gray-800"
+                  className="input focus:ring-2 focus:ring-orange-500"
                   value={filters.sort_by}
                   onChange={(e) => handleFilterChange('sort_by', e.target.value as CompanyFilters['sort_by'])}
                   aria-describedby="sort-help"
@@ -153,7 +154,7 @@ export default function CompaniesPage() {
                   <option value="highest_rated">Highest Rated</option>
                   <option value="most_posts">Most Discussed</option>
                 </select>
-                <p id="sort-help" className="text-sm text-gray-400 mt-2">
+                <p id="sort-help" className="text-sm text-stone-500 mt-2">
                   Order companies by criteria
                 </p>
               </div>
@@ -163,12 +164,12 @@ export default function CompaniesPage() {
 
         {/* Error State */}
         {error && (
-          <div className="bg-gray-900 border border-red-600 rounded-lg p-4 mb-6" role="alert">
+          <div className="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6" role="alert">
             <div className="flex items-center">
               <svg className="h-5 w-5 text-red-400 mr-2" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
               </svg>
-              <span className="text-red-200">{error}</span>
+              <span className="text-red-800">{error}</span>
             </div>
           </div>
         )}
@@ -177,7 +178,7 @@ export default function CompaniesPage() {
         {loading ? (
           <div className="text-center py-12" role="status" aria-live="polite">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600" aria-hidden="true"></div>
-            <p className="mt-2 text-gray-300">Loading companies...</p>
+            <p className="mt-2 text-stone-600">Loading companies...</p>
             <span className="sr-only">Loading companies, please wait.</span>
           </div>
         ) : (
@@ -187,28 +188,28 @@ export default function CompaniesPage() {
               companies.map((company) => (
                 <article 
                   key={company.id} 
-                  className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 p-6 hover:shadow-md transition-shadow focus-within:ring-2 focus-within:ring-blue-500"
+                  className="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 hover:shadow-md transition-shadow focus-within:ring-2 focus-within:ring-orange-500"
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-white truncate pr-2">
+                    <h2 className="text-lg font-semibold text-stone-900 truncate pr-2">
                       {company.name}
                     </h2>
                     <div className="flex items-center ml-2 flex-shrink-0" aria-label={`Rating: ${company.average_rating?.toFixed(1) || 'Not rated'} out of 5`}>
                       <span className="text-yellow-400" aria-hidden="true">★</span>
-                      <span className="text-sm text-gray-300 ml-1">
+                      <span className="text-sm text-stone-600 ml-1">
                         {company.average_rating ? company.average_rating.toFixed(1) : 'N/A'}
                       </span>
                     </div>
                   </div>
                   
                   {company.description && (
-                    <p className="text-gray-300 text-sm mb-4 line-clamp-3">
+                    <p className="text-stone-600 text-sm mb-4 line-clamp-3">
                       {company.description}
                     </p>
                   )}
                   
-                  <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
-                    <span className="bg-gray-800 px-2 py-1 rounded text-xs font-medium text-gray-300">
+                  <div className="flex items-center justify-between text-sm text-stone-500 mb-4">
+                    <span className="bg-stone-100 px-2 py-1 rounded text-xs font-medium text-stone-600">
                       {company.industry || 'Unspecified'}
                     </span>
                     <span aria-label={`${company.post_count || 0} posts about this company`}>
@@ -216,10 +217,10 @@ export default function CompaniesPage() {
                     </span>
                   </div>
                   
-                  <div className="pt-4 border-t border-gray-700">
+                  <div className="pt-4 border-t border-stone-200">
                     <Link 
                       href={`/posts?company=${company.id}`}
-                      className="block w-full bg-orange-600 text-white py-2 px-4 rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors text-sm font-medium text-center"
+                      className="btn btn-primary w-full"
                       aria-label={`View posts about ${company.name}`}
                     >
                       View Posts

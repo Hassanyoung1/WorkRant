@@ -20,13 +20,13 @@ export default function PostFeed() {
       setLoading(true);
       const response = await apiService.getPosts(filters, pageNum);
       const results = Array.isArray(response.results) ? response.results : [];
-      
+
       if (resetPosts) {
         setPosts(results);
       } else {
         setPosts(prev => [...(prev || []), ...results]);
       }
-      
+
       setHasMore(!!response.next);
       setPage(pageNum);
       setError(null);
@@ -54,35 +54,34 @@ export default function PostFeed() {
   const handleVote = async (postId: string, voteType: 'upvote' | 'downvote') => {
     try {
       await apiService.voteOnPost(postId, voteType);
-      // Refresh the specific post or update local state
       setPosts(prev => {
         if (!prev || !Array.isArray(prev)) return [];
         return prev.map(post => {
           if (post.id === postId) {
-          const currentUserVote = post.user_vote;
-          let upvoteChange = 0;
-          let downvoteChange = 0;
-          
-          if (voteType === 'upvote') {
-            if (currentUserVote === 'upvote') {
-              upvoteChange = -1;
-            } else if (currentUserVote === 'downvote') {
-              upvoteChange = 1;
-              downvoteChange = -1;
+            const currentUserVote = post.user_vote;
+            let upvoteChange = 0;
+            let downvoteChange = 0;
+
+            if (voteType === 'upvote') {
+              if (currentUserVote === 'upvote') {
+                upvoteChange = -1;
+              } else if (currentUserVote === 'downvote') {
+                upvoteChange = 1;
+                downvoteChange = -1;
+              } else {
+                upvoteChange = 1;
+              }
             } else {
-              upvoteChange = 1;
+              if (currentUserVote === 'downvote') {
+                downvoteChange = -1;
+              } else if (currentUserVote === 'upvote') {
+                downvoteChange = 1;
+                upvoteChange = -1;
+              } else {
+                downvoteChange = 1;
+              }
             }
-          } else {
-            if (currentUserVote === 'downvote') {
-              downvoteChange = -1;
-            } else if (currentUserVote === 'upvote') {
-              downvoteChange = 1;
-              upvoteChange = -1;
-            } else {
-              downvoteChange = 1;
-            }
-          }
-          
+
             return {
               ...post,
               vote_score: (Number(post.vote_score) || 0) + upvoteChange + downvoteChange,
@@ -107,12 +106,12 @@ export default function PostFeed() {
     return (
       <div className="space-y-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 p-6 animate-pulse">
-            <div className="h-4 bg-gray-700 rounded w-1/4 mb-3"></div>
+          <div key={i} className="rounded-[24px] border border-stone-200 bg-white p-6 shadow-sm">
+            <div className="mb-4 h-4 w-1/4 rounded-full bg-stone-200" />
             <div className="space-y-2">
-              <div className="h-3 bg-gray-700 rounded"></div>
-              <div className="h-3 bg-gray-700 rounded w-5/6"></div>
-              <div className="h-3 bg-gray-700 rounded w-4/6"></div>
+              <div className="h-3 w-full rounded-full bg-stone-200" />
+              <div className="h-3 w-5/6 rounded-full bg-stone-200" />
+              <div className="h-3 w-4/6 rounded-full bg-stone-200" />
             </div>
           </div>
         ))}
@@ -122,39 +121,32 @@ export default function PostFeed() {
 
   return (
     <div className="space-y-6">
-      {/* Post Creation - Dark Theme */}
-      <div className="bg-gray-900 rounded-xl shadow-2xl border border-gray-800 p-6">
+      <div className="rounded-[28px] border border-stone-200 bg-white p-5 shadow-[0_18px_48px_rgba(28,25,23,0.04)] sm:p-6">
         {showPostForm ? (
-          <PostForm 
-            onPostCreated={handlePostCreated}
-            onCancel={() => setShowPostForm(false)}
-          />
+          <PostForm onPostCreated={handlePostCreated} onCancel={() => setShowPostForm(false)} />
         ) : (
           <button
             onClick={() => setShowPostForm(true)}
-            className="w-full text-left p-5 bg-gray-800 rounded-xl hover:bg-gray-700 transition-all border-2 border-dashed border-gray-700 hover:border-orange-500/50 group"
+            className="group flex w-full items-center gap-4 rounded-[20px] border border-dashed border-stone-300 bg-stone-50 p-4 text-left transition hover:border-stone-400 hover:bg-stone-100"
           >
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg bg-orange-600/20 flex items-center justify-center group-hover:bg-orange-600/30 transition-colors">
-                <svg className="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              </div>
-              <span className="text-gray-400 group-hover:text-gray-300 font-medium">Share your workplace experience...</span>
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-stone-900 text-white shadow-sm">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 4v16m8-8H4" />
+              </svg>
             </div>
+            <span className="text-sm font-medium text-stone-600 group-hover:text-stone-900">Share your workplace experience...</span>
           </button>
         )}
       </div>
 
-      {/* Filters */}
-      <div className="bg-gray-900 rounded-xl shadow-lg border border-gray-800 p-4">
-        <div className="flex flex-wrap gap-4 items-center">
+      <div className="rounded-[28px] border border-stone-200 bg-white p-4 shadow-[0_18px_48px_rgba(28,25,23,0.04)]">
+        <div className="flex flex-wrap items-center gap-3">
           <select
             value={filters.post_type || ''}
             onChange={(e) => setFilters(prev => ({ ...prev, post_type: e.target.value || undefined }))}
-            className="px-3 py-2 bg-gray-800 text-white border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+            className="rounded-xl border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-700 outline-none transition focus:border-stone-400 focus:bg-white"
           >
-            <option value="">All Categories</option>
+            <option value="">All categories</option>
             <option value="experience">Experience</option>
             <option value="question">Question</option>
             <option value="advice">Advice</option>
@@ -167,105 +159,61 @@ export default function PostFeed() {
             placeholder="Search companies..."
             value={filters.company || ''}
             onChange={(e) => setFilters(prev => ({ ...prev, company: e.target.value || undefined }))}
-            className="px-3 py-2 bg-gray-800 text-white border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 placeholder-gray-400"
+            className="min-w-[180px] flex-1 rounded-xl border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-700 outline-none transition placeholder:text-stone-400 focus:border-stone-400 focus:bg-white"
           />
 
           <select
             value={filters.sort_by || ''}
             onChange={(e) => setFilters(prev => ({ ...prev, sort_by: e.target.value as PostFilters['sort_by'] }))}
-            className="px-3 py-2 bg-gray-800 text-white border-2 border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+            className="rounded-xl border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-700 outline-none transition focus:border-stone-400 focus:bg-white"
           >
             <option value="">Latest</option>
-            <option value="upvotes">Most Upvotes</option>
-            <option value="controversial">Most Controversial</option>
+            <option value="upvotes">Most upvotes</option>
+            <option value="controversial">Most controversial</option>
           </select>
 
           {(filters.post_type || filters.company || filters.sort_by) && (
-            <button
-              onClick={() => setFilters({})}
-              className="px-3 py-2 text-gray-300 hover:text-white border border-gray-600 rounded-md hover:bg-gray-800"
-            >
-              Clear Filters
+            <button onClick={() => setFilters({})} className="rounded-xl border border-stone-200 px-3 py-2 text-sm text-stone-700 transition hover:bg-stone-50">
+              Clear
             </button>
           )}
         </div>
       </div>
 
-      {/* Error State */}
       {error && (
-        <div className={`border rounded-lg p-4 ${
-          error.includes('Authentication required')
-            ? 'bg-blue-50 border-blue-200'
-            : 'bg-red-50 border-red-200'
-        }`}>
-          <p className={error.includes('Authentication required') ? 'text-blue-800' : 'text-red-800'}>
-            {error}
-          </p>
+        <div className={`rounded-[24px] border p-4 ${error.includes('Authentication required') ? 'border-blue-200 bg-blue-50 text-blue-800' : 'border-red-200 bg-red-50 text-red-700'}`}>
+          <p>{error}</p>
           {error.includes('Authentication required') ? (
-            <a
-              href="/login"
-              className="mt-2 inline-block text-blue-600 hover:text-blue-800 underline"
-            >
-              Log In
-            </a>
+            <a href="/login" className="mt-2 inline-block font-medium underline">Log in</a>
           ) : (
-            <button
-              onClick={() => loadPosts(1, true)}
-              className="mt-2 text-red-600 hover:text-red-800 underline"
-            >
-              Try Again
-            </button>
+            <button onClick={() => loadPosts(1, true)} className="mt-2 font-medium underline">Try again</button>
           )}
         </div>
       )}
 
-      {/* Posts */}
       <div className="space-y-4">
         {posts && posts.length > 0 ? (
-          posts.map(post => (
-            <PostCard
-              key={post.id}
-              post={post}
-              onVote={handleVote}
-            />
-          ))
+          posts.map(post => <PostCard key={post.id} post={post} onVote={handleVote} />)
         ) : (
           !loading && !error && (
-            <div className="text-center py-8 text-gray-500">
-              No posts available yet. Be the first to share your experience!
+            <div className="rounded-[28px] border border-stone-200 bg-white p-10 text-center shadow-sm">
+              <p className="text-lg font-medium text-stone-800">No posts available yet.</p>
+              <p className="mt-2 text-sm text-stone-600">Be the first to share a workplace experience.</p>
             </div>
           )
         )}
       </div>
 
-      {/* Loading */}
       {loading && (
-        <div className="flex justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="flex justify-center py-6">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-stone-200 border-t-stone-900" />
         </div>
       )}
 
-      {/* Load More */}
       {!loading && hasMore && posts.length > 0 && (
-        <div className="flex justify-center py-4">
-          <button
-            onClick={handleLoadMore}
-            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors"
-          >
-            Load More Posts
-          </button>
-        </div>
-      )}
-
-      {/* Empty State */}
-      {!loading && posts.length === 0 && !error && (
-        <div className="text-center py-12">
-          <p className="text-gray-600 mb-4">No posts found.</p>
-          <button
-            onClick={() => setShowPostForm(true)}
-            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-700 transition-colors"
-          >
-            Create the First Post
+        <div className="flex justify-center py-2">
+          <button onClick={handleLoadMore} className="btn btn-secondary">
+            Load more posts
           </button>
         </div>
       )}

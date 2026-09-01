@@ -32,7 +32,7 @@ export default function PostDetailPage() {
     }
   }, [params.id]);
 
-  const handleVote = async (postId: string, voteType: 'upvote' | 'downvote') => {
+  const handleVote = async (postId: string, _voteType: 'upvote' | 'downvote') => {
     // Refresh post data after voting
     try {
       const updatedPost = await apiService.getPost(postId);

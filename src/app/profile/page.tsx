@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { apiService } from '@/lib/api';
-import { User } from '@/types';
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();

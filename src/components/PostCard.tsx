@@ -21,6 +21,8 @@ export default function PostCard({ post, onVote }: PostCardProps) {
   const [upvotes, setUpvotes] = useState(Number(post.upvotes) || 0);
   const [downvotes, setDownvotes] = useState(Number(post.downvotes) || 0);
   const [showReportModal, setShowReportModal] = useState(false);
+  const mediaUrls = Array.isArray(post.media_urls) ? post.media_urls : [];
+  const authorInitial = (post.author_pseudonym || 'A').charAt(0).toUpperCase();
 
   const handleVote = async (voteType: 'upvote' | 'downvote') => {
     if (!user || isVoting) return;
@@ -96,30 +98,30 @@ export default function PostCard({ post, onVote }: PostCardProps) {
   };
 
   return (
-    <article className="bg-gray-900 border border-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+    <article className="bg-white border border-stone-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition-shadow">
       {/* Post header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center">
-            <span className="text-orange-500 font-medium">
-              {post.author_pseudonym.charAt(0).toUpperCase()}
+          <div className="w-10 h-10 bg-stone-900 rounded-full flex items-center justify-center">
+            <span className="text-orange-300 font-medium">
+              {authorInitial}
             </span>
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <span className="font-medium text-white">{post.author_pseudonym}</span>
+              <span className="font-medium text-stone-900">{post.author_pseudonym}</span>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPostTypeColor(post.post_type)}`}>
                 {post.post_type}
               </span>
             </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-400">
+            <div className="flex items-center space-x-2 text-sm text-stone-500">
               <span>{formatDate(post.created_at)}</span>
               {post.company && (
                 <>
                   <span>•</span>
                   <Link 
                     href={`/companies/${post.company.slug}`}
-                    className="text-orange-600 hover:text-orange-700 font-medium"
+                    className="text-orange-700 hover:text-orange-900 font-medium"
                   >
                     {post.company.name}
                   </Link>
@@ -151,12 +153,12 @@ export default function PostCard({ post, onVote }: PostCardProps) {
       {/* Post content */}
       <div className="mb-4">
         {/* Body */}
-        <p className="text-gray-300 mb-4 whitespace-pre-wrap">{post.body}</p>
+        <p className="text-stone-700 mb-4 whitespace-pre-wrap">{post.body}</p>
         
         {/* Images/Media */}
-        {post.media_urls && post.media_urls.length > 0 && (
+        {mediaUrls.length > 0 && (
           <div className="mt-4 space-y-3">
-            {post.media_urls.map((url, index) => {
+            {mediaUrls.map((url, index) => {
               const isImage = url.match(/\.(jpg|jpeg|png|gif|webp)$/i);
               const isPDF = url.endsWith('.pdf');
               const isDoc = url.match(/\.(doc|docx|xls|xlsx)$/i);
@@ -212,7 +214,7 @@ export default function PostCard({ post, onVote }: PostCardProps) {
       </div>
 
       {/* Post footer */}
-      <div className="flex items-center justify-between pt-4 border-t border-gray-800">
+      <div className="flex items-center justify-between pt-4 border-t border-stone-200">
         {/* Voting */}
         <div className="flex items-center space-x-1">
           <button
