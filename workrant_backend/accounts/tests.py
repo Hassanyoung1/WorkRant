@@ -38,3 +38,7 @@ class TokenRefreshAuthTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn('Welcome to WorkRant API', response.content.decode())
+
+        head_response = self.client.head('/')
+
+        self.assertEqual(head_response.status_code, 200)

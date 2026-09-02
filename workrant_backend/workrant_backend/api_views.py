@@ -11,7 +11,7 @@ from django.utils import timezone
 import django
 
 
-@api_view(['GET'])
+@api_view(['GET', 'HEAD'])
 @permission_classes([AllowAny])
 def health_check(request):
     """
@@ -27,7 +27,7 @@ def health_check(request):
     }, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'HEAD'])
 @permission_classes([AllowAny])
 def api_root(request):
     """
