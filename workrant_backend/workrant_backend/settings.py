@@ -30,8 +30,14 @@ if not SECRET_KEY:
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 # Allowed hosts - restrict in production
-configured_hosts = os.getenv('ALLOWED_HOSTS', '')
+configured_hosts = os.getenv(
+    'ALLOWED_HOSTS',
+    'workrant.app,www.workrant.app,api.workrant.app,localhost,127.0.0.1',
+)
 ALLOWED_HOSTS = [host.strip() for host in configured_hosts.split(',') if host.strip()]
+for required_host in ('workrant.app', 'www.workrant.app', 'api.workrant.app'):
+    if required_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(required_host)
 render_hostname = os.getenv('RENDER_EXTERNAL_HOSTNAME')
 if render_hostname and render_hostname not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(render_hostname)
@@ -211,20 +217,29 @@ SIMPLE_JWT = {
 }
 
 # CORS Configuration - Secure cross-origin requests
-CORS_ALLOWED_ORIGINS = []
+default_cors_origins = [
+    'https://workrant.app',
+    'https://www.workrant.app',
+    'https://6a99cd2532f3399d38de9720--workrant.netlify.app',
+]
+default_cors_origins.extend(['http://localhost:3000', 'http://127.0.0.1:3000'])
 cors_origins = os.getenv('CORS_ALLOWED_ORIGINS', '')
 if cors_origins:
-    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins.split(',')]
+    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in cors_origins.split(',') if origin.strip()]
+    for origin in default_cors_origins:
+        if origin not in CORS_ALLOWED_ORIGINS:
+            CORS_ALLOWED_ORIGINS.append(origin)
 elif DEBUG:
-    CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000']
+    CORS_ALLOWED_ORIGINS = default_cors_origins
 else:
-    # In production, CORS origins must be explicitly set
-    raise ValueError(
-        "CORS_ALLOWED_ORIGINS environment variable is required for production. "
-        "Please set it in your .env file with your frontend domain(s)."
-    )
+    CORS_ALLOWED_ORIGINS = default_cors_origins
 
 CORS_ALLOW_CREDENTIALS = os.getenv('CORS_ALLOW_CREDENTIALS', 'True').lower() == 'true'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://workrant.app',
+    'https://www.workrant.app',
+]
 
 # Additional CORS settings for development
 if DEBUG:
