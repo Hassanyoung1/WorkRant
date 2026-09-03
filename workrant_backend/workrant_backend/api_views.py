@@ -17,6 +17,9 @@ def health_check(request):
     """
     Simple health check endpoint.
     """
+    if request.method == 'HEAD':
+        return Response(status=status.HTTP_200_OK)
+
     return Response({
         'status': 'healthy',
         'service': 'WorkRant Backend API',
@@ -33,6 +36,9 @@ def api_root(request):
     """
     API root endpoint with available endpoints.
     """
+    if request.method == 'HEAD':
+        return Response(status=status.HTTP_200_OK)
+
     return Response({
         'message': 'Welcome to WorkRant API',
         'version': '1.0.0',
