@@ -14,7 +14,7 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.pseudonym.trim() && formData.password.trim()) {
+    if (formData.pseudonym.trim() && formData.password?.trim()) {
       await login(formData);
     }
   };

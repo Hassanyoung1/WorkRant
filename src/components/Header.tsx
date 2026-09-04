@@ -17,12 +17,8 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-[#6f4437]/40 bg-[#4a2d24] text-[#fffaf6] shadow-sm backdrop-blur-md">
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#f3d9c8] bg-[#f5efe9] text-sm font-bold text-[#2a1d1a] shadow-sm">
-            W
-          </div>
-          <div>
-            <div className="text-lg font-semibold tracking-[-0.04em] text-[#fffaf6]">WorkRant</div>
-          </div>
+          <div className="text-lg font-semibold tracking-[-0.04em] text-[#fffaf6]">WorkRant</div>
+          <span className="hidden text-[10px] uppercase tracking-[0.22em] text-[#d9b5a4] sm:inline">Workplace, unfiltered</span>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">

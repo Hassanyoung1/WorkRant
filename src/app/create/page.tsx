@@ -34,10 +34,10 @@ const CreatePostPage: React.FC = () => {
   // Show loading while checking auth
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-[#f3e9df]">
         <Header />
         <div className="flex justify-center items-center min-h-[400px]">
-          <div className="text-gray-500">Loading...</div>
+          <div className="text-[#6e5b52]">Loading the editor...</div>
         </div>
       </div>
     );
@@ -46,10 +46,10 @@ const CreatePostPage: React.FC = () => {
   // Don't render form if not authenticated
   if (!user) {
     return (
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-[#f3e9df]">
         <Header />
         <div className="flex justify-center items-center min-h-[400px]">
-          <div className="text-gray-400">Redirecting to login...</div>
+          <div className="text-[#6e5b52]">Redirecting to login...</div>
         </div>
       </div>
     );
@@ -99,50 +99,34 @@ const CreatePostPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-[#f3e9df]">
       <Header />
       
       <main className="container mx-auto px-4 py-8 sm:py-12">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {/* Hero Section with Animation */}
-          <div className="text-center mb-12 relative">
+          <div className="mb-10 border-b-2 border-[#241c19] pb-8">
             {/* Background Glow Effect */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-orange-600/10 rounded-full blur-3xl -z-10"></div>
-            
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-600 to-orange-700 text-white mb-6 shadow-2xl shadow-orange-600/30 animate-pulse">
-              <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-              </svg>
-            </div>
-            
-            <h1 className="text-5xl sm:text-6xl font-black mb-4">
-              <span className="bg-gradient-to-r from-white via-gray-100 to-orange-500 bg-clip-text text-transparent">
-                Share Your
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-                Experience
-              </span>
-            </h1>
-            
-            <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-              Your voice matters. Help others make informed career decisions by sharing what you&apos;ve experienced.
+            <p className="eyebrow text-[#9d4134]">The composer</p>
+            <h1 className="display-title mt-4 text-5xl text-[#241c19] sm:text-6xl">Say the part you would normally leave out.</h1>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-[#584944]">
+              Give the next person enough context to make a better decision. No polished employer language required.
             </p>
           </div>
 
           {/* Stats Bar */}
-          <div className="grid grid-cols-3 gap-4 mb-8">
-            <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-800 rounded-xl p-4 text-center">
-              <div className="text-2xl font-bold text-orange-500">100%</div>
-              <div className="text-xs text-gray-400 mt-1">Anonymous</div>
+          <div className="grid grid-cols-3 gap-px bg-[#cdb9aa] mb-8">
+            <div className="bg-[#fffaf7] p-4 text-center">
+              <div className="display-title text-2xl text-[#9d4134]">Private</div>
+              <div className="eyebrow text-[#6e5b52] mt-1">By design</div>
             </div>
-            <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-800 rounded-xl p-4 text-center">
-              <div className="text-2xl font-bold text-orange-500">Safe</div>
-              <div className="text-xs text-gray-400 mt-1">Protected</div>
+            <div className="bg-[#fffaf7] p-4 text-center">
+              <div className="display-title text-2xl text-[#9d4134]">Specific</div>
+              <div className="eyebrow text-[#6e5b52] mt-1">Useful context</div>
             </div>
-            <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-800 rounded-xl p-4 text-center">
-              <div className="text-2xl font-bold text-orange-500">Helpful</div>
-              <div className="text-xs text-gray-400 mt-1">Community</div>
+            <div className="bg-[#fffaf7] p-4 text-center">
+              <div className="display-title text-2xl text-[#9d4134]">Human</div>
+              <div className="eyebrow text-[#6e5b52] mt-1">First-hand</div>
             </div>
           </div>
 

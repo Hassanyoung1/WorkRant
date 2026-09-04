@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { apiService } from '@/lib/api';
+import Header from '@/components/Header';
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
@@ -67,7 +68,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-[#f3e9df] flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
       </div>
     );
@@ -78,38 +79,25 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <div className="bg-gray-900 border-b border-gray-800">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-white">My Profile</h1>
-            <button
-              onClick={() => router.back()}
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              ← Back
-            </button>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-[#f3e9df] text-[#241c19]">
+      <Header />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Profile Card */}
-        <div className="bg-gray-900 rounded-lg border border-gray-800 p-6 mb-8">
+        <div className="border-b-2 border-[#241c19] pb-8 mb-8">
           <div className="flex items-center space-x-4">
             {/* Avatar */}
-            <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center">
-              <span className="text-xl font-bold text-white">
+            <div className="w-16 h-16 bg-[#9d4134] flex items-center justify-center">
+              <span className="font-serif text-2xl font-bold text-[#fffaf7]">
                 {user?.pseudonym?.charAt(0)?.toUpperCase() || 'U'}
               </span>
             </div>
             
             {/* User Info */}
             <div className="flex-1">
-              <h2 className="text-xl font-semibold text-white">{user?.pseudonym || 'User'}</h2>
-              <p className="text-gray-400">Anonymous Workplace Voice</p>
-              <p className="text-sm text-gray-500 mt-1">
+              <h1 className="display-title text-4xl text-[#241c19]">{user?.pseudonym || 'User'}</h1>
+              <p className="mt-2 text-[#9d4134]">Anonymous workplace voice</p>
+              <p className="mt-1 text-sm text-[#6e5b52]">
                 Member since {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Recently'}
               </p>
             </div>
@@ -117,82 +105,78 @@ export default function ProfilePage() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-gray-900 rounded-lg border border-gray-800 p-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#cdb9aa] mb-8">
+          <div className="bg-[#fffaf7] p-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-orange-500 mb-2">
+              <div className="display-title text-4xl text-[#9d4134] mb-2">
                 {userStats.postCount}
               </div>
-              <div className="text-gray-400">Posts Shared</div>
+              <div className="eyebrow text-[#6e5b52]">Posts shared</div>
             </div>
           </div>
           
-          <div className="bg-gray-900 rounded-lg border border-gray-800 p-6">
+          <div className="bg-[#fffaf7] p-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-orange-500 mb-2">
+              <div className="display-title text-4xl text-[#9d4134] mb-2">
                 {userStats.commentCount}
               </div>
-              <div className="text-gray-400">Comments Made</div>
+              <div className="eyebrow text-[#6e5b52]">Comments made</div>
             </div>
           </div>
           
-          <div className="bg-gray-900 rounded-lg border border-gray-800 p-6">
+          <div className="bg-[#fffaf7] p-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-orange-500 mb-2">
+              <div className="display-title text-4xl text-[#9d4134] mb-2">
                 {userStats.votesReceived}
               </div>
-              <div className="text-gray-400">Votes Received</div>
+              <div className="eyebrow text-[#6e5b52]">Votes received</div>
             </div>
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-gray-900 rounded-lg border border-gray-800 p-6 mb-8">
-          <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
+        <div className="border border-[#cdb9aa] bg-[#fffaf7] p-6 mb-8">
+          <h2 className="display-title text-3xl text-[#241c19] mb-4">Keep the record going.</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button
               onClick={() => router.push('/create')}
-              className="flex items-center justify-center px-4 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors"
+              className="btn btn-primary"
             >
-              <span className="mr-2">✏️</span>
               Share New Experience
             </button>
             
             <button
               onClick={() => router.push('/posts')}
-              className="flex items-center justify-center px-4 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors border border-gray-700"
+              className="btn btn-secondary"
             >
-              <span className="mr-2">📋</span>
               View All Posts
             </button>
           </div>
         </div>
 
         {/* Privacy Notice */}
-        <div className="bg-gray-900 rounded-lg border border-gray-800 p-6 mb-8">
-          <h3 className="text-lg font-semibold text-white mb-3">Privacy & Anonymity</h3>
-          <div className="text-gray-400 space-y-2">
-            <p>• Your posts and comments are completely anonymous to other users</p>
-            <p>• No personal information is ever shared publicly</p>
-            <p>• Your identity is protected across all workplace discussions</p>
-            <p>• Only you can see this profile page</p>
+        <div className="border-l-2 border-[#9d4134] bg-[#e2d2c4] p-6 mb-8">
+          <h2 className="display-title text-3xl text-[#241c19] mb-3">Privacy is the point.</h2>
+          <div className="space-y-2 text-[#584944]">
+            <p>Your public posts and comments use your pseudonym.</p>
+            <p>No personal information is shared with other users.</p>
+            <p>Your profile and account activity are visible only to you.</p>
           </div>
         </div>
 
         {/* Account Actions */}
-        <div className="bg-gray-900 rounded-lg border border-gray-800 p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Account</h3>
+        <div className="border-t border-[#cdb9aa] pt-6">
+          <h2 className="eyebrow text-[#6e5b52] mb-4">Account</h2>
           <div className="space-y-3">
             <button
               onClick={handleLogout}
-              className="w-full flex items-center justify-center px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+              className="btn border border-[#9d4134] text-[#9d4134] hover:bg-[#f0d9d1]"
             >
-              <span className="mr-2">🚪</span>
               Sign Out
             </button>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

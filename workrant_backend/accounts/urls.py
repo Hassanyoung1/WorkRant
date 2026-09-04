@@ -12,6 +12,7 @@ urlpatterns = [
     re_path(r'^register/?$', views.UserRegistrationView.as_view(), name='register'),
     re_path(r'^login/?$', views.UserLoginView.as_view(), name='login'),
     re_path(r'^refresh/?$', views.CustomTokenRefreshView.as_view(), name='token_refresh'),
+    re_path(r'^logout/?$', views.UserLogoutView.as_view(), name='logout'),
     re_path(r'^profile/?$', views.UserProfileView.as_view(), name='profile'),
     re_path(r'^password/change/?$', views.PasswordChangeView.as_view(), name='password_change'),
     re_path(r'^delete/?$', views.user_delete_account, name='delete_account'),

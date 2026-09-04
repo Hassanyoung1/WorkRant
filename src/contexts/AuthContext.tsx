@@ -126,13 +126,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         credentials.recovery_token
       );
       
-      // Store user and tokens in localStorage
+      // Store only the non-sensitive profile; JWTs remain in httpOnly cookies.
       localStorage.setItem('user', JSON.stringify(response.user));
-      localStorage.setItem('access_token', response.tokens.access);
-      localStorage.setItem('refresh_token', response.tokens.refresh);
-      
-      // Update API service tokens
-      apiService.setTokens(response.tokens.access, response.tokens.refresh);
       
       dispatch({
         type: 'LOGIN_SUCCESS',
@@ -160,13 +155,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         data.account_type
       );
       
-      // Store user and tokens in localStorage
+      // Store only the non-sensitive profile; JWTs remain in httpOnly cookies.
       localStorage.setItem('user', JSON.stringify(response.user));
-      localStorage.setItem('access_token', response.tokens.access);
-      localStorage.setItem('refresh_token', response.tokens.refresh);
-      
-      // Update API service tokens
-      apiService.setTokens(response.tokens.access, response.tokens.refresh);
       
       dispatch({
         type: 'LOGIN_SUCCESS',
@@ -192,10 +182,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await apiService.logout();
       localStorage.removeItem('user');
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      
-      // Clear tokens from API service
       apiService.clearTokens();
       
       dispatch({ type: 'LOGOUT' });
@@ -203,10 +189,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error('Logout error:', error);
       // Still logout locally even if server call fails
       localStorage.removeItem('user');
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      
-      // Clear tokens from API service
       apiService.clearTokens();
       
       dispatch({ type: 'LOGOUT' });

@@ -15,7 +15,7 @@ import {
 
 const API_BASE_URL = process.env.NODE_ENV === 'development'
   ? process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000/api'
-  : process.env.NEXT_PUBLIC_API_URL || 'https://api.workrant.app/api';
+  : process.env.NEXT_PUBLIC_API_URL || 'https://workrant.onrender.com/api';
 
 export class APIError extends Error {
   code?: string;
@@ -39,52 +39,12 @@ export class APIError extends Error {
 class APIService {
   private baseURL: string;
   private refreshInProgress: boolean = false;
-  private accessToken: string | null = null;
-  private refreshToken: string | null = null;
 
   constructor() {
     this.baseURL = API_BASE_URL;
-    // Load tokens from localStorage on initialization
-    if (typeof window !== 'undefined') {
-      this.accessToken = localStorage.getItem('access_token');
-      this.refreshToken = localStorage.getItem('refresh_token');
-    }
-  }
-
-  setTokens(access: string, refresh: string) {
-    this.accessToken = access;
-    this.refreshToken = refresh;
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('access_token', access);
-      localStorage.setItem('refresh_token', refresh);
-    }
   }
 
   clearTokens() {
-    this.accessToken = null;
-    this.refreshToken = null;
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-    }
-  }
-
-  getAccessToken() {
-    // Always try to reload from localStorage if token is missing
-    if (!this.accessToken && typeof window !== 'undefined') {
-      this.accessToken = localStorage.getItem('access_token');
-      this.refreshToken = localStorage.getItem('refresh_token');
-    }
-    return this.accessToken;
-  }
-
-  // Debug method to check token status
-  getTokenStatus() {
-    return {
-      hasAccessToken: !!this.accessToken,
-      hasRefreshToken: !!this.refreshToken,
-      accessTokenPreview: this.accessToken ? this.accessToken.substring(0, 20) + '...' : null
-    };
   }
 
   private async makeRequest<T>(
@@ -95,39 +55,17 @@ class APIService {
     const url = `${this.baseURL}${endpoint}`;
     const headers: Record<string, string> = {};
 
+    const csrfToken = typeof document !== 'undefined'
+      ? document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='))?.split('=')[1]
+      : undefined;
+    if (csrfToken && options.method && !['GET', 'HEAD', 'OPTIONS'].includes(options.method.toUpperCase())) {
+      headers['X-CSRFToken'] = decodeURIComponent(csrfToken);
+    }
+
     // Don't set Content-Type for FormData - let browser handle it
     const isFormData = options.body instanceof FormData;
     if (!isFormData) {
       headers['Content-Type'] = 'application/json';
-    }
-
-    // Add Authorization header if we have an access token (but not for auth endpoints or public endpoints)
-    const isAuthEndpoint = endpoint.startsWith('/auth/login') || 
-                          endpoint.startsWith('/auth/register');
-    // UUID pattern: 8-4-4-4-12 hex digits
-    const uuidPattern = /^\/posts\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\//i;
-    const isPublicEndpoint = endpoint === '/posts/' ||
-                            (endpoint.startsWith('/posts/?') && !endpoint.includes('user=current')) ||
-                            endpoint.startsWith('/companies') ||
-                            uuidPattern.test(endpoint) || // single post view (UUID only, not /posts/create/)
-                            (endpoint.includes('/comments/') && options.method === 'GET') // viewing comments
-    
-    // Always try to load token from localStorage if not present or empty
-    if ((!this.accessToken || this.accessToken === '') && typeof window !== 'undefined') {
-      const storedToken = localStorage.getItem('access_token');
-      const storedRefresh = localStorage.getItem('refresh_token');
-      if (storedToken) {
-        this.accessToken = storedToken;
-        this.refreshToken = storedRefresh;
-        console.log('[API] Reloaded token from localStorage for:', endpoint);
-      }
-    }
-    
-    if (this.accessToken && !isAuthEndpoint && !isPublicEndpoint) {
-      console.log('[API] Adding Authorization header for:', endpoint);
-      headers['Authorization'] = `Bearer ${this.accessToken}`;
-    } else if (!isAuthEndpoint && !isPublicEndpoint) {
-      console.warn('[API] No token available for protected endpoint:', endpoint);
     }
 
     // Merge with any additional headers (but skip empty headers object from FormData requests)
@@ -172,7 +110,16 @@ class APIService {
             throw new APIError('Session expired. Please log in again.', 401);
           }
         }
-        const errorData = await response.json().catch(() => ({}));
+        const responseText = await response.text();
+        let errorData: Record<string, unknown> = {};
+        try {
+          const parsed = responseText ? JSON.parse(responseText) : {};
+          if (parsed && typeof parsed === 'object') {
+            errorData = parsed as Record<string, unknown>;
+          }
+        } catch {
+          // Keep the raw response for non-JSON server errors.
+        }
         const validationMessages: string[] = [];
 
         const collectMessages = (value: unknown) => {
@@ -205,13 +152,16 @@ class APIService {
           status: response.status,
           statusText: response.statusText,
           responseBody: errorData,
+          responseText,
         });
 
         throw new APIError(
           String(readableMessage),
           response.status,
-          errorData.code,
-          errorData.details
+          typeof errorData.code === 'string' ? errorData.code : undefined,
+          errorData.details && typeof errorData.details === 'object'
+            ? errorData.details as Record<string, string[]>
+            : undefined
         );
       }
       const contentType = response.headers.get('content-type');
@@ -231,15 +181,9 @@ class APIService {
   }
 
   private async handleTokenRefresh() {
-    if (!this.refreshToken) {
-      throw new APIError('No refresh token available', 401);
-    }
-
     const response = await fetch(`${this.baseURL}/auth/refresh/`, {
       method: 'POST',
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refresh: this.refreshToken }),
     });
 
     if (!response.ok) {
@@ -247,23 +191,6 @@ class APIService {
       throw new APIError('Session expired. Please log in again.', 401);
     }
 
-    // Get new tokens from response
-    const data = await response.json();
-    if (!data.access) {
-      throw new APIError('Invalid refresh token response', 401);
-    }
-
-    // Store new access token (and refresh token if rotated)
-    if (data.refresh) {
-      this.setTokens(data.access, data.refresh);
-    } else {
-      this.accessToken = data.access;
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('access_token', data.access);
-      }
-    }
-
-    // Return true to indicate successful refresh
     return true;
   }
 
@@ -304,19 +231,21 @@ class APIService {
   }
 
   async refreshTokens(): Promise<LoginResponse> {
-    if (!this.refreshToken) {
-      throw new APIError('No refresh token available', 401);
-    }
-    
     return this.makeRequest('/auth/refresh/', {
       method: 'POST',
-      body: JSON.stringify({ refresh: this.refreshToken }),
     });
   }
 
   async logout(): Promise<void> {
-    // For JWT authentication, logout is handled client-side by clearing tokens
-    this.clearTokens();
+    const csrfToken = typeof document !== 'undefined'
+      ? document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='))?.split('=')[1]
+      : undefined;
+
+    await fetch(`${this.baseURL}/auth/logout/`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: csrfToken ? { 'X-CSRFToken': decodeURIComponent(csrfToken) } : undefined,
+    });
   }
 
   // User Profile

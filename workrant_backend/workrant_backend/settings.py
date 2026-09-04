@@ -163,7 +163,7 @@ else:
 # Rest Framework Configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'accounts.authentication.CookieJWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -207,7 +207,7 @@ SIMPLE_JWT = {
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
-    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+    'USER_AUTHENTICATION_RULE': 'accounts.authentication.user_authentication_rule',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
     'JTI_CLAIM': 'jti',
@@ -236,10 +236,21 @@ else:
 
 CORS_ALLOW_CREDENTIALS = os.getenv('CORS_ALLOW_CREDENTIALS', 'True').lower() == 'true'
 
+configured_csrf_origins = os.getenv('CSRF_TRUSTED_ORIGINS', '')
 CSRF_TRUSTED_ORIGINS = [
     'https://workrant.app',
     'https://www.workrant.app',
+    'https://6a99cd2532f3399d38de9720--workrant.netlify.app',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
 ]
+if configured_csrf_origins:
+    CSRF_TRUSTED_ORIGINS.extend(
+        origin.strip()
+        for origin in configured_csrf_origins.split(',')
+        if origin.strip() and origin.strip() not in CSRF_TRUSTED_ORIGINS
+    )
+CSRF_COOKIE_SAMESITE = 'None' if not DEBUG else 'Lax'
 
 # Additional CORS settings for development
 if DEBUG:

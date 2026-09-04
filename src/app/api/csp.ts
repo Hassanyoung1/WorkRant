@@ -11,8 +11,8 @@ const policy = {
   'img-src': ["'self'", 'data:', 'blob:', 'https:'],
   'connect-src': [
     "'self'",
-    'https://api.workrant.app',
-    'https://api.workrant.app/media',
+    'https://workrant.onrender.com',
+    'https://workrant.onrender.com/media',
     process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '',
   ].filter(Boolean),
   'frame-ancestors': ["'none'"],

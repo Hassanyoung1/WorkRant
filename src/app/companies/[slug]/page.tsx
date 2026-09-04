@@ -68,7 +68,7 @@ export default function CompanyDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-[#f3e9df]">
         <Header />
         <main className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
@@ -89,18 +89,18 @@ export default function CompanyDetailPage() {
 
   if (error || !company) {
     return (
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-[#f3e9df]">
         <Header />
         <main className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
-            <div className="bg-gray-900 border border-red-600 rounded-lg p-6 text-center">
-              <h2 className="text-lg font-semibold text-red-400 mb-2">Company Not Found</h2>
-              <p className="text-red-200 mb-4">
+              <div className="bg-[#fffaf7] border border-[#cdb9aa] p-8 text-center">
+              <h2 className="display-title text-3xl text-[#241c19] mb-2">Company not found.</h2>
+              <p className="text-[#584944] mb-4">
                 {error || 'The company you are looking for does not exist.'}
               </p>
               <Link
                 href="/companies"
-                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-gray-900 to-orange-600 text-white rounded-lg hover:from-black hover:to-orange-700 transition-colors shadow-md hover:shadow-lg"
+                className="btn btn-primary"
               >
                 Browse Companies
               </Link>
@@ -112,14 +112,14 @@ export default function CompanyDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-[#f3e9df]">
       <Header />
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Breadcrumb */}
           <nav className="mb-6 text-sm">
-            <Link href="/companies" className="text-orange-600 hover:text-orange-700">
+            <Link href="/companies" className="eyebrow text-[#9d4134] hover:text-[#713229]">
               Companies
             </Link>
             <span className="mx-2 text-gray-400">/</span>
@@ -128,12 +128,13 @@ export default function CompanyDetailPage() {
 
           {/* Company Header */}
           {/* Company Header */}
-          <div className="bg-gray-900 shadow-lg rounded-lg p-8 mb-6 border border-gray-800">
+          <div className="bg-[#fffaf7] border border-[#cdb9aa] p-8 mb-6">
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h1 className="text-3xl font-bold text-white mb-2">{company.name}</h1>
+                <p className="eyebrow text-[#9d4134]">Company conversation</p>
+                <h1 className="display-title mt-3 text-5xl text-[#241c19]">{company.name}</h1>
                 {company.industry && (
-                  <span className="inline-block bg-gray-800 text-gray-300 text-sm px-3 py-1 rounded-full">
+                  <span className="inline-block border border-[#cdb9aa] text-[#6e5b52] text-xs uppercase tracking-[0.14em] px-3 py-1">
                     {company.industry}
                   </span>
                 )}
@@ -141,18 +142,18 @@ export default function CompanyDetailPage() {
               <div className="flex items-center">
                 {company.average_rating !== undefined && company.average_rating !== null && (
                   <div className="flex items-center">
-                    <span className="text-yellow-400 text-2xl mr-2">★</span>
-                    <span className="text-2xl font-bold text-white">
+                    <span className="text-[#9d4134] text-2xl mr-2">★</span>
+                    <span className="text-2xl font-bold text-[#241c19]">
                       {company.average_rating.toFixed(1)}
                     </span>
-                    <span className="text-sm text-gray-400 ml-1">/5</span>
+                    <span className="text-sm text-[#6e5b52] ml-1">/5</span>
                   </div>
                 )}
               </div>
             </div>
 
             {company.description && (
-              <p className="text-gray-400 mb-6">{company.description}</p>
+              <p className="text-[#584944] mb-6">{company.description}</p>
             )}
 
             <div className="flex items-center gap-6 text-sm text-gray-400 pt-4 border-t border-gray-800">
@@ -182,23 +183,23 @@ export default function CompanyDetailPage() {
 
           {/* Posts Section */}
           <div className="mb-6">
-            <h2 className="text-xl font-semibold text-white mb-4">
+            <h2 className="display-title text-4xl text-[#241c19] mb-4">
               Posts about {company.name}
             </h2>
           </div>
 
           {posts.length === 0 ? (
-            <div className="bg-gray-900 rounded-lg shadow-sm p-12 text-center border border-gray-700">
+            <div className="bg-[#fffaf7] p-12 text-center border border-[#cdb9aa]">
               <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
               </svg>
-              <h3 className="text-lg font-semibold text-white mb-2">No Posts Yet</h3>
-              <p className="text-gray-300 mb-6">
+              <h3 className="display-title text-3xl text-[#241c19] mb-2">No posts yet.</h3>
+              <p className="text-[#584944] mb-6">
                 Be the first to share your experience working at {company.name}
               </p>
               <Link
                 href="/create"
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-900 to-orange-600 text-white rounded-lg hover:from-black hover:to-orange-700 transition-colors shadow-md hover:shadow-lg"
+                className="btn btn-primary"
               >
                 Share Your Experience
               </Link>

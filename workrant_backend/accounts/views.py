@@ -15,9 +15,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenRefreshView
 from django.contrib.auth import login
 from django.utils import timezone
+from django.middleware.csrf import get_token
 #from django_ratelimit.decorators import ratelimit  # Disabled for development
 
 
@@ -43,7 +43,7 @@ def set_auth_cookies(response, access_token, refresh_token=None):
         max_age=3600,
         httponly=True,
         secure=is_production,
-        samesite='Lax',
+        samesite='None' if is_production else 'Lax',
         domain=None,
     )
     if refresh_token is not None:
@@ -53,7 +53,7 @@ def set_auth_cookies(response, access_token, refresh_token=None):
             max_age=7 * 24 * 60 * 60,
             httponly=True,
             secure=is_production,
-            samesite='Lax',
+            samesite='None' if is_production else 'Lax',
             domain=None,
         )
 
@@ -82,10 +82,6 @@ class UserRegistrationView(APIView):
             # Prepare response
             response_data = {
                 'user': UserProfileSerializer(user).data,
-                'tokens': {
-                    'refresh': str(refresh),
-                    'access': str(access_token),
-                },
                 'disclaimer': 'Opinions expressed are anonymous and unverified.'
             }
             
@@ -97,6 +93,7 @@ class UserRegistrationView(APIView):
                 )
 
             response = Response(response_data, status=status.HTTP_201_CREATED)
+            get_token(request)
             set_auth_cookies(response, str(access_token), str(refresh))
             return response
         
@@ -132,14 +129,11 @@ class UserLoginView(APIView):
             
             response_data = {
                 'user': UserProfileSerializer(user).data,
-                'tokens': {
-                    'refresh': str(refresh),
-                    'access': str(access_token),
-                },
                 'disclaimer': 'Opinions expressed are anonymous and unverified.'
             }
 
             response = Response(response_data, status=status.HTTP_200_OK)
+            get_token(request)
             set_auth_cookies(response, str(access_token), str(refresh))
             return response
         
@@ -171,11 +165,7 @@ class CustomTokenRefreshView(APIView):
         from rest_framework_simplejwt.serializers import TokenRefreshSerializer
         from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 
-        refresh_token = (
-            request.data.get('refresh')
-            or request.POST.get('refresh')
-            or request.COOKIES.get('refresh_token')
-        )
+        refresh_token = request.COOKIES.get('refresh_token')
 
         if not refresh_token:
             return Response(
@@ -192,13 +182,11 @@ class CustomTokenRefreshView(APIView):
 
             response_data = {
                 'message': 'Token refreshed successfully',
-                'access': str(new_access_token),
                 'disclaimer': 'Opinions expressed are anonymous and unverified.'
             }
-            if rotated_refresh_token:
-                response_data['refresh'] = str(rotated_refresh_token)
 
             response = Response(response_data, status=status.HTTP_200_OK)
+            get_token(request)
             set_auth_cookies(
                 response,
                 str(new_access_token),
@@ -211,6 +199,24 @@ class CustomTokenRefreshView(APIView):
                 {'error': 'Invalid refresh token', 'detail': str(e)},
                 status=status.HTTP_401_UNAUTHORIZED
             )
+
+
+class UserLogoutView(APIView):
+    # Logout must work even when the access token has already expired.
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        refresh_token = request.COOKIES.get('refresh_token')
+        if refresh_token:
+            try:
+                RefreshToken(refresh_token).blacklist()
+            except Exception:
+                pass
+
+        response = Response(status=status.HTTP_204_NO_CONTENT)
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+        return response
 
 
 # @method_decorator(ratelimit(key='user', rate='3/m', method='POST'), name='post')

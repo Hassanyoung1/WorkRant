@@ -49,14 +49,15 @@ export default function CompaniesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-[#f3e9df]">
       <Header />
       
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8" role="main">
-        <div className="mb-8">
-          <h1 className="text-3xl font-semibold tracking-tight text-stone-900 mb-2">Companies</h1>
-          <p className="text-stone-600 mb-6">
-            Browse workplace discussions by company. All posts are anonymous and unverified.
+        <div className="mb-10 border-b-2 border-[#241c19] pb-8">
+          <p className="eyebrow text-[#9d4134]">Company index</p>
+          <h1 className="display-title mt-4 text-5xl text-[#241c19] sm:text-6xl">The places people talk about after work.</h1>
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-[#584944]">
+            Search the names behind the job titles. Ratings are signals, not verdicts; the stories underneath are where the context lives.
           </p>
           
           {/* Anonymity Disclaimer */}
@@ -78,8 +79,8 @@ export default function CompaniesPage() {
           
           {/* Search and Filters */}
                     {/* Search and Filters */}
-          <div className="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 mb-6">
-            <h2 className="text-lg font-semibold text-stone-900 mb-4">Search & Filter Companies</h2>
+          <div className="border border-[#cdb9aa] bg-[#fffaf7] p-6 mb-8">
+            <h2 className="display-title text-3xl text-[#241c19] mb-5">Find the signal.</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                   <label htmlFor="search" className="block text-sm font-semibold text-stone-900 mb-2">
@@ -188,14 +189,14 @@ export default function CompaniesPage() {
               companies.map((company) => (
                 <article 
                   key={company.id} 
-                  className="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 hover:shadow-md transition-shadow focus-within:ring-2 focus-within:ring-orange-500"
+                  className="border border-[#cdb9aa] bg-[#fffaf7] p-6 transition hover:-translate-y-1 hover:shadow-[8px_10px_0_#d46a4a] focus-within:ring-2 focus-within:ring-[#9d4134]"
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-stone-900 truncate pr-2">
+                    <h2 className="font-serif text-2xl font-semibold text-[#241c19] truncate pr-2">
                       {company.name}
                     </h2>
                     <div className="flex items-center ml-2 flex-shrink-0" aria-label={`Rating: ${company.average_rating?.toFixed(1) || 'Not rated'} out of 5`}>
-                      <span className="text-yellow-400" aria-hidden="true">★</span>
+                      <span className="text-[#9d4134]" aria-hidden="true">★</span>
                       <span className="text-sm text-stone-600 ml-1">
                         {company.average_rating ? company.average_rating.toFixed(1) : 'N/A'}
                       </span>
@@ -213,7 +214,7 @@ export default function CompaniesPage() {
                       {company.industry || 'Unspecified'}
                     </span>
                     <span aria-label={`${company.post_count || 0} posts about this company`}>
-                      {company.post_count || 0} posts
+                      {company.post_count || 0} conversations
                     </span>
                   </div>
                   

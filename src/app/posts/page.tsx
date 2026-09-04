@@ -58,10 +58,10 @@ const PostsContent: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-stone-50">
+      <div className="min-h-screen bg-[#f3e9df]">
         <Header />
-        <main className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto space-y-6">
+        <main className="container mx-auto px-4 py-10">
+          <div className="mx-auto max-w-4xl space-y-6">
             {[...Array(3)].map((_, i) => (
               <PostSkeleton key={i} />
             ))}
@@ -74,11 +74,11 @@ const PostsContent: React.FC = () => {
   if (error) {
     const isAuthError = error instanceof APIError && error.message.includes('Authentication required');
     return (
-      <div className="min-h-screen bg-stone-50">
+      <div className="min-h-screen bg-[#f3e9df]">
         <Header />
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-10">
           <div className="max-w-4xl mx-auto">
-            <div className={`border rounded-2xl p-6 text-center bg-white shadow-sm ${
+            <div className={`border rounded-none p-8 text-center bg-[#fffaf7] shadow-sm ${
               isAuthError 
                 ? 'bg-orange-900/20 border-orange-600' 
                 : 'bg-red-900/20 border-red-600'
@@ -117,10 +117,10 @@ const PostsContent: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-stone-50">
+      <div className="min-h-screen bg-[#f3e9df]">
         <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           {/* Success message after creating post */}
           {showSuccess && (
@@ -137,11 +137,12 @@ const PostsContent: React.FC = () => {
             </div>
           )}
 
-          <div className="mb-8">
-            <h1 className="text-3xl font-semibold tracking-tight text-stone-900 mb-2">
+          <div className="mb-10 border-b-2 border-[#241c19] pb-8">
+            <p className="eyebrow text-[#9d4134]">The public record</p>
+            <h1 className="display-title mt-4 text-5xl text-[#241c19] sm:text-6xl">
               {companyId ? 'Company Posts' : 'All Posts'}
             </h1>
-            <p className="text-stone-600">
+            <p className="mt-4 max-w-2xl text-lg leading-8 text-[#584944]">
               {companyId 
                 ? 'Browse workplace experiences for this company.'
                 : 'Browse all workplace experiences and discussions from the community.'
@@ -163,8 +164,8 @@ const PostsContent: React.FC = () => {
           </div>
 
       {(!Array.isArray(posts) || posts.length === 0) ? (
-            <div className="bg-white border border-stone-200 rounded-2xl shadow-sm p-12 text-center">
-              <h2 className="text-xl font-semibold text-stone-900 mb-2">No Posts Yet</h2>
+            <div className="border border-[#cdb9aa] bg-[#fffaf7] p-12 text-center">
+              <h2 className="display-title text-3xl text-[#241c19]">Nothing posted yet.</h2>
               <p className="text-stone-600 mb-6">
                 Be the first to share a workplace experience!
               </p>
@@ -172,7 +173,7 @@ const PostsContent: React.FC = () => {
                 href="/create" 
                 className="btn btn-primary"
               >
-                Create First Post
+                Share the first one
               </a>
             </div>
           ) : (
@@ -201,7 +202,7 @@ const PostsContent: React.FC = () => {
 const PostsPage: React.FC = () => {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-stone-50">
+      <div className="min-h-screen bg-[#f3e9df]">
         <Header />
         <main className="pt-20 px-4 sm:px-6 lg:px-8 pb-12">
           <div className="max-w-4xl mx-auto">

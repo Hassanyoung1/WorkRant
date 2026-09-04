@@ -25,7 +25,7 @@ export default function LoginForm() {
       errors.pseudonym = 'Pseudonym must be at least 3 characters';
     }
 
-    if (!formData.password) {
+    if (!formData.password?.trim()) {
       errors.password = 'Password is required';
     }
 

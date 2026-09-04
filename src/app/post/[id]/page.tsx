@@ -7,6 +7,7 @@ import { Post } from '@/types';
 import PostCard from '@/components/PostCard';
 import CommentSection from '@/components/CommentSection';
 import apiService from '@/lib/api';
+import Header from '@/components/Header';
 
 export default function PostDetailPage() {
   const params = useParams();
@@ -33,6 +34,7 @@ export default function PostDetailPage() {
   }, [params.id]);
 
   const handleVote = async (postId: string, _voteType: 'upvote' | 'downvote') => {
+    void _voteType;
     // Refresh post data after voting
     try {
       const updatedPost = await apiService.getPost(postId);
@@ -44,17 +46,17 @@ export default function PostDetailPage() {
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="min-h-screen bg-[#f3e9df]"><Header /><div className="max-w-4xl mx-auto px-4 py-12">
         <div className="animate-pulse">
           <div className="bg-gray-200 rounded-lg h-64 mb-6"></div>
         </div>
-      </div>
+      </div></div>
     );
   }
 
   if (error || !post) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="min-h-screen bg-[#f3e9df]"><Header /><div className="max-w-4xl mx-auto px-4 py-12">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Post not found</h1>
           <p className="text-gray-600 mb-6">{error || 'This post may have been deleted or moved.'}</p>
@@ -65,17 +67,17 @@ export default function PostDetailPage() {
             ← Back to feed
           </Link>
         </div>
-      </div>
+      </div></div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-[#f3e9df]"><Header /><main className="max-w-4xl mx-auto px-4 py-12">
       {/* Back link */}
       <div className="mb-6">
         <Link 
           href="/"
-          className="text-primary-600 hover:text-primary-700 font-medium flex items-center space-x-2"
+          className="eyebrow text-[#9d4134] hover:text-[#713229] flex items-center space-x-2"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -89,6 +91,6 @@ export default function PostDetailPage() {
 
       {/* Comments */}
       <CommentSection postId={post.id} />
-    </div>
+    </main></div>
   );
 }

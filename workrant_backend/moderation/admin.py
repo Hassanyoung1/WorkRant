@@ -68,7 +68,14 @@ class ReportAdmin(admin.ModelAdmin):
         }),
     )
     
-    ordering = ['-created_at']
+    ordering = ['status', '-created_at']
+    date_hierarchy = 'created_at'
+    list_per_page = 50
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            'reporter_user', 'handled_by', 'content_type'
+        )
     
     actions = ['mark_resolved', 'mark_dismissed']
     
@@ -159,6 +166,13 @@ class AdminAuditLogAdmin(admin.ModelAdmin):
     )
     
     ordering = ['-created_at']
+    date_hierarchy = 'created_at'
+    list_per_page = 50
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            'admin_user', 'target_content_type', 'related_report'
+        )
     
     def has_add_permission(self, request):
         """Prevent manual creation of audit logs."""

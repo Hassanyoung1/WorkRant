@@ -42,6 +42,8 @@ class CompanyAdmin(admin.ModelAdmin):
     )
     
     ordering = ['-created_at']
+    date_hierarchy = 'created_at'
+    list_per_page = 50
     
     def post_count(self, obj):
         """Get number of posts for this company."""
@@ -87,6 +89,11 @@ class CompanyRatingAdmin(admin.ModelAdmin):
     )
     
     ordering = ['-created_at']
+    date_hierarchy = 'created_at'
+    list_per_page = 50
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('company', 'user')
     
     def user_pseudonym(self, obj):
         """Get user pseudonym."""

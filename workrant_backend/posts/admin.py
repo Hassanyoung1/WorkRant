@@ -67,6 +67,11 @@ class PostAdmin(admin.ModelAdmin):
     )
     
     ordering = ['-created_at']
+    date_hierarchy = 'created_at'
+    list_per_page = 50
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('user', 'company')
     
     actions = ['hide_posts', 'unhide_posts', 'delete_posts']
     
@@ -151,6 +156,11 @@ class CommentAdmin(admin.ModelAdmin):
     )
     
     ordering = ['-created_at']
+    date_hierarchy = 'created_at'
+    list_per_page = 50
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('user', 'post', 'parent')
     
     actions = ['hide_comments', 'unhide_comments', 'delete_comments']
     

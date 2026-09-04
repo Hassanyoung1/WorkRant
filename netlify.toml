@@ -5,11 +5,11 @@
 
 [build.environment]
   NODE_VERSION = "20.11.0"
-  NEXT_PUBLIC_API_URL = "https://api.workrant.app/api"
-  NEXT_PUBLIC_BACKEND_URL = "https://api.workrant.app"
-  NEXT_PUBLIC_BACKEND_HOSTNAME = "api.workrant.app"
+  NEXT_PUBLIC_API_URL = "https://workrant.onrender.com/api"
+  NEXT_PUBLIC_BACKEND_URL = "https://workrant.onrender.com"
+  NEXT_PUBLIC_BACKEND_HOSTNAME = "workrant.onrender.com"
   NEXT_PUBLIC_BACKEND_PORT = "443"
-  NEXT_PUBLIC_MEDIA_URL = "https://api.workrant.app/media"
+  NEXT_PUBLIC_MEDIA_URL = "https://workrant.onrender.com/media"
   NODE_ENV = "production"
   NEXT_PUBLIC_ENVIRONMENT = "production"
   NEXT_PUBLIC_SECURE_MODE = "true"
@@ -51,7 +51,7 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.workrant.app http://localhost:8000; frame-src 'self';"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://workrant.onrender.com http://localhost:8000; frame-src 'self';"
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"

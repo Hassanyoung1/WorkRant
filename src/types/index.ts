@@ -8,20 +8,13 @@ export interface User {
   is_anonymous_user: boolean;
 }
 
-export interface AuthTokens {
-  access: string;
-  refresh: string;
-}
-
 export interface LoginResponse {
   user: User;
-  tokens: AuthTokens;
   disclaimer: string;
 }
 
 export interface RegisterResponse {
   user: User;
-  tokens: AuthTokens;
   disclaimer: string;
   recovery_token?: string;
   recovery_warning?: string;

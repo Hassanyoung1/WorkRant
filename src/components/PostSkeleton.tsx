@@ -1,6 +1,10 @@
 import React from 'react';
 
-const PostSkeleton: React.FC = () => {
+const PostSkeleton: React.FC<{ count?: number }> = ({ count = 1 }) => {
+  if (count > 1) {
+    return <>{Array.from({ length: count }, (_, index) => <PostSkeleton key={index} />)}</>;
+  }
+
   return (
     <div className="bg-gray-900 border border-gray-800 rounded-lg shadow-sm p-6 animate-pulse">
       <div className="flex items-center space-x-4 mb-4">
